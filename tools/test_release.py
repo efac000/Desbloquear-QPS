@@ -144,6 +144,9 @@ assert "Desbloquear-QPS-DLL-Windows-x64.zip" in site
 assert "releases/latest/download/dinput8.dll" in site
 assert "releases/latest/download/dst_fps.ini" in site
 assert "Instale em 3 passos" in site
+assert "ATENÇÃO: A DLL É NECESSÁRIA" in site
+assert "border:2px solid #f16d72" in site
+assert "notice-title" in site and "notice-emphasis" in site
 assert (ROOT/"docs"/".nojekyll").is_file()
 assert (ROOT/"docs"/"icone-workshop-512.png").read_bytes()==(ROOT/"icone-workshop-512.png").read_bytes()
 print("PASS: página PT-BR, versão atual, links diretos, ícone e instruções")
