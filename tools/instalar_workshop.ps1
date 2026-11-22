@@ -16,7 +16,7 @@ function FindDST {
     param([string]$folder)
     if ([string]::IsNullOrWhiteSpace($folder)) { return }
     $folder=$folder.Trim().Trim('"').Replace("\\","\")
-    if ((Test-Path -LiteralPath $folder -PathType Container) -and !$roots.Contains($folder)) {
+    if ((Test-Path -LiteralPath $folder -PathType Container) -and -not ($roots -contains $folder)) {
       $roots.Add($folder)
     }
   }
@@ -36,13 +36,13 @@ function FindDST {
   }
   $libraries=[System.Collections.Generic.List[string]]::new()
   foreach($root in $roots) {
-    if (!$libraries.Contains($root)) {$libraries.Add($root)}
+    if (-not ($libraries -contains $root)) {$libraries.Add($root)}
     $vdf=Join-Path $root "steamapps\libraryfolders.vdf"
     if (Test-Path -LiteralPath $vdf -PathType Leaf) {
       $contents=Get-Content -LiteralPath $vdf -Raw -Encoding UTF8
       foreach($match in [regex]::Matches($contents,'(?im)^\s*"path"\s*"([^"]+)"')) {
         $path=$match.Groups[1].Value.Replace("\\","\")
-        if ((Test-Path -LiteralPath $path -PathType Container) -and !$libraries.Contains($path)) {
+        if ((Test-Path -LiteralPath $path -PathType Container) -and -not ($libraries -contains $path)) {
           $libraries.Add($path)
         }
       }
@@ -51,7 +51,7 @@ function FindDST {
   $games=[System.Collections.Generic.List[string]]::new()
   foreach($lib in $libraries) {
     $candidate=Join-Path $lib "steamapps\common\Don't Starve Together"
-    if ((IsDST $candidate) -and !$games.Contains($candidate)) {$games.Add($candidate)}
+    if ((IsDST $candidate) -and -not ($games -contains $candidate)) {$games.Add($candidate)}
   }
   if ($games.Count -eq 1) {return $games[0]}
   if ($games.Count -gt 1) {

@@ -46,5 +46,6 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 
 - Novo arquivo INSTALAR DLL.bat de dois cliques, distribuído no ZIP pequeno.
 - Ajuda a encontrar bibliotecas Steam e solicita administrador só quando necessário.
+- Localização automática testada no Windows, corrigindo duplicação do mesmo caminho com diferenças entre maiúsculas e minúsculas.
 - Instalador nativo preserva backups e configuração existente e impede conflito com outra DLL diferente.
 - Página e documentação atualizadas, sem modificar Lua ou DLL.

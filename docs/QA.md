@@ -21,6 +21,13 @@ Antes de declarar pronto para Workshop: confirmar o ícone novo em jogo; testar 
 
 O pacote Workshop NÃO inclui instalação automática de DLL em bin64. O readme e a descrição pública devem deixar esse requisito explícito. Não registrar publicação sem prova real.
 
+## Instalador pós-Workshop de duplo clique
+
+- ZIP da DLL inclui INSTALAR DLL.bat e tools/instalar_workshop.ps1.
+- Testados: sintaxe PowerShell, simulação, instalação em DST fictício, integridade SHA-256, INI preservado, ausência de mod duplicado e bloqueio de DLL conflitante.
+- Simulação no computador real confirmou identificação automática da instalação Steam mesmo com caminhos usando capitalizações diferentes, sem modificar o jogo.
+- A solicitação de permissões UAC só ocorre quando o destino exigir; o caso de elevação ainda depende do Windows do jogador.
+
 ## Preparação do repositório público separado
 
 - Fonte de verdade deste lançamento: https://github.com/eduardonnn/Desbloquear-QPS (main).
