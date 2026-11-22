@@ -1,0 +1,55 @@
+name: QA do Desbloquear QPS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa-lua:
+    name: Lua 5.1, DLL, arte e pacotes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependências
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 python3-pil
+      - name: Testes estáticos
+        run: /usr/bin/python3 tools/test_release.py
+      - name: Conferir pacotes distribuídos
+        run: /usr/bin/python3 tools/gerar_pacotes.py --verificar
+
+  qa-instalador:
+    name: Instalador em Windows isolado
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Testar instalador sem tocar em jogos reais
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "tools/instalar_local.ps1"), [ref]$tokens, [ref]$errors) | Out-Null
+          if (@($errors).Count -ne 0) { throw ($errors | Out-String) }
+          $jogo=Join-Path $env:RUNNER_TEMP "DST-QPS-Test"
+          New-Item -ItemType Directory -Force -Path (Join-Path $jogo "mods"),(Join-Path $jogo "bin64") | Out-Null
+          & powershell -NoProfile -ExecutionPolicy Bypass -File "tools/instalar_local.ps1" -PastaJogo $jogo -SomenteDLL
+          if ($LASTEXITCODE -ne 0) { throw "Simulação falhou" }
+          if (Test-Path (Join-Path $jogo "bin64/dinput8.dll")) { throw "A simulação escreveu a DLL" }
+          & powershell -NoProfile -ExecutionPolicy Bypass -File "tools/instalar_local.ps1" -PastaJogo $jogo -SomenteDLL -Aplicar
+          if ($LASTEXITCODE -ne 0) { throw "Instalação somente DLL falhou" }
+          if (Test-Path (Join-Path $jogo "mods/desbloquear-qps")) { throw "Modo Workshop duplicou o mod" }
+          & powershell -NoProfile -ExecutionPolicy Bypass -File "tools/instalar_local.ps1" -PastaJogo $jogo -Aplicar
+          if ($LASTEXITCODE -ne 0) { throw "Instalação local falhou" }
+          $mod=Join-Path $jogo "mods/desbloquear-qps/modmain.lua"
+          if (!(Test-Path -LiteralPath $mod)) { throw "modmain.lua ausente" }
+          $destino=Join-Path $jogo "bin64/dinput8.dll"
+          if ((Get-FileHash $destino -Algorithm SHA256).Hash -ne (Get-FileHash "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL diferente" }
+          Write-Host "PASS: simulação, somente DLL e instalação local"

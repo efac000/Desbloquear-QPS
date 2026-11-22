@@ -1,0 +1,9 @@
+third_party/
+.build/
+__pycache__/
+*.pyc
+*.o
+*.obj
+*.log
+*.bak
+*.tmp
