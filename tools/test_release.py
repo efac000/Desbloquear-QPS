@@ -147,3 +147,14 @@ assert "Instale em 3 passos" in site
 assert (ROOT/"docs"/".nojekyll").is_file()
 assert (ROOT/"docs"/"icone-workshop-512.png").read_bytes()==(ROOT/"icone-workshop-512.png").read_bytes()
 print("PASS: página PT-BR, versão atual, links diretos, ícone e instruções")
+# O instalador de duplo clique deve ser incluso no ZIP de DLL e no completo,
+# sem duplicar os arquivos do mod da Workshop.
+launcher=(ROOT/"INSTALAR DLL.bat").read_text(encoding="utf-8")
+wrapper=(ROOT/"tools"/"instalar_workshop.ps1").read_text(encoding="utf-8")
+assert "tools\\instalar_workshop.ps1" in launcher
+assert "-SomenteDLL -Aplicar -PastaJogo" in wrapper
+assert "FindDST" in wrapper and "CanWrite" in wrapper
+assert "Start-Process -FilePath $powershell -Verb RunAs" in wrapper
+assert "INSTALAR DLL.bat" in (ROOT/"README.md").read_text(encoding="utf-8")
+assert "INSTALAR DLL.bat" in site
+print("PASS: instalador de dois cliques e instruções da Workshop")

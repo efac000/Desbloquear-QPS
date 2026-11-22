@@ -40,3 +40,11 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 - Instruções simples em três passos e link único para a página pública.
 - Pacote nativo independente para instalar apenas DLL/INI, sem mod duplicado.
 - A DLL e o código do mod não foram modificados nesta revisão de distribuição.
+
+
+## Instalador automático para assinantes da Workshop
+
+- Novo arquivo INSTALAR DLL.bat de dois cliques, distribuído no ZIP pequeno.
+- Ajuda a encontrar bibliotecas Steam e solicita administrador só quando necessário.
+- Instalador nativo preserva backups e configuração existente e impede conflito com outra DLL diferente.
+- Página e documentação atualizadas, sem modificar Lua ou DLL.

@@ -14,6 +14,17 @@ Edição mantida por **café**. Desbloqueia a seleção de FPS do DST, oferece i
 
 A página mostra automaticamente a versão atual, um botão grande para **Baixar DLL + INI** e três passos simples de instalação. **Este é o link recomendado para a descrição da Steam Workshop.**
 
+## Instale automaticamente em dois cliques
+
+**Assinou o Desbloquear QPS pela Steam Workshop?** Instale somente a DLL.
+
+1. [Baixe o ZIP pequeno (DLL + INI)](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip) e extraia todos os arquivos.
+2. Abra a pasta extraída Desbloquear QPS e dê dois cliques em **INSTALAR DLL.bat**. Confirme a autorização do Windows, se for solicitada.
+
+Pronto! O instalador encontra a pasta do DST, coloca somente os arquivos nativos necessários, preserva o INI e faz backups. **Não instala uma segunda cópia do mod.** Se já existir outra DLL diferente, para por segurança. Feche o jogo antes de executar.
+
+Sem comandos ou PowerShell. Consulte o [guia simples](docs/BAIXAR_DLL.md) para mais detalhes.
+
 ## DLL para quem veio da Workshop
 
 **Já assinou o Desbloquear QPS na Steam? Não instale o mod outra vez. Baixe apenas a DLL.**

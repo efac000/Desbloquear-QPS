@@ -1,3 +1,13 @@
+## Para quem instalou o mod pela Steam Workshop
+
+1. Baixe o [ZIP pequeno da DLL + INI](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip).
+2. Extraia todos os arquivos e dê **dois cliques em INSTALAR DLL.bat**.
+3. Autorize o Windows se necessário e espere a mensagem de sucesso.
+
+O instalador encontra o DST e copia só a DLL e o INI sem criar outra versão do mod. **Feche o jogo primeiro.** Não substitui automaticamente uma DLL diferente de outro complemento.
+
+As instruções manuais alternativas continuam abaixo.
+
 # Instalação do Desbloquear QPS — passo a passo
 
 O mod possui **duas partes distintas**: os scripts do cliente (obtidos pela Workshop ou pelo pacote local) e a DLL `dinput8.dll` (instalada manualmente no Windows). Para escolher FPS acima de 60, você precisa das duas partes.

@@ -1,3 +1,18 @@
+INSTALACAO AUTOMATICA — DESBLOQUEAR QPS
+
+1. Feche Don't Starve Together.
+2. Extraia TODO este ZIP.
+3. Entre na pasta Desbloquear QPS.
+4. Execute INSTALAR DLL.bat com dois cliques.
+5. Confirme a permissao do Windows, se necessario.
+6. Abra o jogo e habilite Desbloquear QPS nos Mods de Cliente.
+
+O instalador encontra a pasta do jogo, preserva o INI, faz backup
+e recusa substituir uma DLL diferente sem verificacao.
+Nao instale uma segunda copia do mod da Workshop.
+
+========== ALTERNATIVA MANUAL ==========
+
 DESBLOQUEAR QPS — DLL PARA WINDOWS 64 BITS
 
 Se você já assinou Desbloquear QPS na Steam Workshop, NÃO instale outra cópia do mod.

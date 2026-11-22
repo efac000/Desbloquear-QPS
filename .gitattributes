@@ -7,6 +7,7 @@ licenses/* text eol=lf
 *.lua text eol=lf
 *.py text eol=lf
 *.ps1 text eol=lf
+*.bat text eol=crlf
 *.md text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
@@ -15,6 +16,7 @@ licenses/* text eol=lf
 *.hpp text eol=lf
 *.def text eol=lf
 *.xml text eol=lf
+*.html text eol=lf
 *.txt text eol=lf
 *.png binary
 *.webp binary

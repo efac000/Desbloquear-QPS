@@ -1,3 +1,13 @@
+## Mais fácil: baixar, extrair e executar
+
+1. Baixe o [ZIP pequeno com DLL + INI](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip).
+2. Extraia o ZIP completo, abra a pasta Desbloquear QPS e dê **dois cliques no arquivo INSTALAR DLL.bat**.
+3. Depois da mensagem de sucesso, abra o DST e habilite o mod nos Mods de Cliente.
+
+O instalador encontra automaticamente a pasta do jogo e solicita permissão de administrador apenas quando necessária. Ele preserva o INI e interrompe se encontrar outra DLL diferente. Feche o jogo antes de executar.
+
+**A instalação manual mostrada abaixo é opcional.**
+
 # Baixe somente a DLL do Desbloquear QPS
 
 Esta página é para quem **já assinou o mod pela Steam Workshop**. Você precisa instalar separadamente o complemento nativo para Windows 64 bits.

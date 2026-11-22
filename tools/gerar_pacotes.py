@@ -23,7 +23,7 @@ MOD_FILES=[
     "modicon.tex","modicon.xml","preview.png","icone-workshop-512.png",
 ]
 ALL_ROOT_FILES=[
-    "README.md","LICENSE","HISTORICO.md",*MOD_FILES,
+    "README.md","LICENSE","HISTORICO.md","INSTALAR DLL.bat",*MOD_FILES,
 ]
 ALL_DIRS=["shaders","bin64","native_plugin","licenses","art","docs","tools"]
 
@@ -83,10 +83,11 @@ def main()->None:
     # Para assinantes da Workshop: DLL, INI, instalador e instruções.
     # O ZIP não pode conter os scripts do mod e criar versões duplicadas.
     complemento=entries(collect([
-        "bin64/dinput8.dll", "bin64/dst_fps.ini", "tools/instalar_local.ps1"
+        "bin64/dinput8.dll", "bin64/dst_fps.ini", "tools/instalar_local.ps1",
+        "tools/instalar_workshop.ps1", "INSTALAR DLL.bat"
     ],[]))
     complemento[FOLDER+"/LEIA-ME-ANTES-DE-INSTALAR.txt"]=(ROOT/"docs"/"INSTRUCOES_DLL.txt").read_bytes()
-    assert len(complemento)==4
+    assert len(complemento)==6
     assert not any(n.endswith(".lua") or "/shaders/" in n for n in complemento)
     assert len(workshop)>=11, "Arquivos Workshop incompletos"
     assert "Desbloquear QPS/bin64/dinput8.dll" in full

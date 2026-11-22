@@ -68,3 +68,22 @@ jobs:
           $dllNoJogo = Join-Path $jogoDll "bin64/dinput8.dll"
           if ((Get-FileHash -LiteralPath $dllNoJogo -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL do ZIP independente divergente" }
           Write-Host "PASS: instalador do ZIP de DLL, sem cópia redundante do mod"
+          # Instalação com o novo lançador de dois cliques (PowerShell interno).
+          $novoWrapper = Join-Path $standalone "tools/instalar_workshop.ps1"
+          $novoBat = Join-Path $standalone "INSTALAR DLL.bat"
+          if (!(Test-Path -LiteralPath $novoWrapper) -or !(Test-Path -LiteralPath $novoBat)) { throw "Instalador automático ausente" }
+          $astTokens=$null
+          $astErrors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile($novoWrapper, [ref]$astTokens, [ref]$astErrors) | Out-Null
+          if (@($astErrors).Count -ne 0) { throw ($astErrors | Out-String) }
+          $jogoAuto = Join-Path $env:RUNNER_TEMP "DST-QPS-AUTO"
+          New-Item -ItemType Directory -Force -Path (Join-Path $jogoAuto "mods"),(Join-Path $jogoAuto "bin64") | Out-Null
+          & powershell -NoProfile -ExecutionPolicy Bypass -STA -File $novoWrapper -PastaJogo $jogoAuto -Simular
+          if ($LASTEXITCODE -ne 0) { throw "Simulação automática falhou" }
+          if (Test-Path -LiteralPath (Join-Path $jogoAuto "bin64/dinput8.dll")) { throw "Simulação alterou a pasta" }
+          & powershell -NoProfile -ExecutionPolicy Bypass -STA -File $novoWrapper -PastaJogo $jogoAuto
+          if ($LASTEXITCODE -ne 0) { throw "Instalação automática falhou" }
+          if ((Get-FileHash -LiteralPath (Join-Path $jogoAuto "bin64/dinput8.dll") -Algorithm SHA256).Hash -ne
+              (Get-FileHash -LiteralPath "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL automática divergente" }
+          if (Test-Path -LiteralPath (Join-Path $jogoAuto "mods/desbloquear-qps")) { throw "Auto-instalação duplicou o mod" }
+          Write-Host "PASS: lançador automático e simulação"

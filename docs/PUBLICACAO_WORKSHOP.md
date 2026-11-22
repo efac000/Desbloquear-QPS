@@ -21,6 +21,16 @@ A imagem principal `preview.png` tem **512 × 512 pixels**; `icone-workshop-512.
 
 **Não coloque** `dinput8.dll`, `dst_fps.ini`, `native_plugin/`, código-fonte ou pacotes ZIP dentro da pasta a enviar para a Workshop. A DLL precisa ser instalada separadamente.
 
+## Texto recomendado para divulgar
+
+> Para desbloquear os FPS, baixe o ZIP pequeno no site oficial:
+> https://eduardonnn.github.io/Desbloquear-QPS/
+>
+> **Extraia o ZIP, abra a pasta Desbloquear QPS e execute INSTALAR DLL.bat (dois cliques).**
+> O instalador encontra o jogo automaticamente. Feche o DST antes de instalar.
+> A Steam Workshop não instala a DLL automaticamente.
+
+
 ## Um único link para a Workshop
 
 Para os jogadores, basta colocar este texto na descrição do item:
