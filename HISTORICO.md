@@ -33,3 +33,10 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 - Guia de instalação, FAQ, texto de divulgação, imagem 512x512 e pacotes prontos para baixar.
 - Automação de QA em Linux e Windows; arquivos ZIP conferidos por CRC, nomes e conteúdo.
 - A DLL com correção EGL não foi modificada nesta migração. Não há alteração medida de velocidade do motor ou promessa de FPS universal.
+
+## Facilidade de download para assinantes da Workshop
+
+- Links visíveis e diretos no início do README para DLL, INI e ZIP pequeno.
+- Instruções simples em três passos e link único para a página pública.
+- Pacote nativo independente para instalar apenas DLL/INI, sem mod duplicado.
+- A DLL e o código do mod não foram modificados nesta revisão de distribuição.

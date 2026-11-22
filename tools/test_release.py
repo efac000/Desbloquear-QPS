@@ -108,8 +108,13 @@ assert 'local enabled_str = "Ativado"' in modmain
 assert 'local disabled_str = "Desativado"' in modmain
 assert "Usage:" not in modmain and "Unknown option" not in modmain
 assert "[Café Smooth" not in modmain
-for doc in ["README.md","docs/INSTALACAO.md","docs/PUBLICACAO_WORKSHOP.md","docs/FAQ.md"]:
+for doc in ["README.md","docs/INSTALACAO.md","docs/BAIXAR_DLL.md",
+            "docs/INSTRUCOES_DLL.txt","docs/PUBLICACAO_WORKSHOP.md","docs/FAQ.md"]:
     assert (ROOT/doc).is_file(),doc
+readme=(ROOT/"README.md").read_text(encoding="utf-8")
+assert "Desbloquear-QPS-DLL-Windows-x64.zip" in readme
+assert "releases/latest/download/dinput8.dll" in readme
+assert "releases/latest/download/dst_fps.ini" in readme
 
 # O modinfo não pode depender dos globais Lua removidos pelo sandbox da Klei.
 bare = """local env = {}

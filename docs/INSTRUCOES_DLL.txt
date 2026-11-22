@@ -1,0 +1,23 @@
+DESBLOQUEAR QPS — DLL PARA WINDOWS 64 BITS
+
+Se você já assinou Desbloquear QPS na Steam Workshop, NÃO instale outra cópia do mod.
+
+1. Feche Don't Starve Together.
+2. Abra a pasta bin64 deste ZIP.
+3. Copie dinput8.dll para a pasta bin64 do jogo:
+   C:\Program Files (x86)\Steam\steamapps\common\Don't Starve Together\bin64
+4. Copie dst_fps.ini para a mesma pasta SÓ SE ELE NÃO EXISTIR.
+5. Abra o jogo e ative Desbloquear QPS nos Mods de Cliente.
+
+IMPORTANTE: se já houver outra dinput8.dll, NÃO substitua sem identificar
+a origem e fazer backup. Outro complemento pode deixar de funcionar.
+
+Não coloque a DLL na pasta mods nem em bin64\bin64.
+O ZIP inclui instalador opcional em tools\instalar_local.ps1.
+Simulação (não grava): powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\instalar_local.ps1 -SomenteDLL
+Instalação: acrescente -Aplicar ao final.
+
+Link único para instruções e downloads:
+https://github.com/eduardonnn/Desbloquear-QPS
+
+DLL destinada ao Windows 64 bits. A taxa real de FPS depende do hardware.

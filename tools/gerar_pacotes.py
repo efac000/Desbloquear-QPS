@@ -80,6 +80,14 @@ def main()->None:
     opts=arg.parse_args()
     full=entries(collect(ALL_ROOT_FILES,ALL_DIRS))
     workshop=entries(collect(MOD_FILES,["shaders"]))
+    # Para assinantes da Workshop: DLL, INI, instalador e instruções.
+    # O ZIP não pode conter os scripts do mod e criar versões duplicadas.
+    complemento=entries(collect([
+        "bin64/dinput8.dll", "bin64/dst_fps.ini", "tools/instalar_local.ps1"
+    ],[]))
+    complemento[FOLDER+"/LEIA-ME-ANTES-DE-INSTALAR.txt"]=(ROOT/"docs"/"INSTRUCOES_DLL.txt").read_bytes()
+    assert len(complemento)==4
+    assert not any(n.endswith(".lua") or "/shaders/" in n for n in complemento)
     assert len(workshop)>=11, "Arquivos Workshop incompletos"
     assert "Desbloquear QPS/bin64/dinput8.dll" in full
     assert "Desbloquear QPS/bin64/dinput8.dll" not in workshop
@@ -88,6 +96,7 @@ def main()->None:
     names=[
       ("Desbloquear-QPS-v1.0.0-Completo.zip",full),
       ("Desbloquear-QPS-v1.0.0-Workshop.zip",workshop),
+      ("Desbloquear-QPS-DLL-Windows-x64.zip",complemento),
     ]
     if not opts.verificar:
         for n,data in names:

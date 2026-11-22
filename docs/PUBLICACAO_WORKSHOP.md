@@ -21,6 +21,19 @@ A imagem principal `preview.png` tem **512 × 512 pixels**; `icone-workshop-512.
 
 **Não coloque** `dinput8.dll`, `dst_fps.ini`, `native_plugin/`, código-fonte ou pacotes ZIP dentro da pasta a enviar para a Workshop. A DLL precisa ser instalada separadamente.
 
+## Um único link para a Workshop
+
+Para os jogadores, basta colocar este texto na descrição do item:
+
+> **Para desbloquear FPS, instale a DLL separadamente (Windows 64 bits).**
+> A Steam Workshop não instala DLLs na pasta do jogo. Acesse a página abaixo, baixe o ZIP pequeno **DLL + INI** e siga os três passos no início:
+>
+> https://github.com/eduardonnn/Desbloquear-QPS
+>
+> Se já assinou este mod pela Workshop, não instale outra cópia do mod.
+
+Na página do GitHub há também os downloads diretos de `dinput8.dll` e `dst_fps.ini`. Os links usam `releases/latest`, funcionando mesmo quando a versão oficial for atualizada.
+
 ## Nome para a Steam Workshop
 
 **Desbloquear QPS**

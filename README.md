@@ -8,7 +8,25 @@ Edição mantida por **café**. Desbloqueia a seleção de FPS do DST, oferece i
 
 **Importante:** o mod da Steam Workshop **não instala automaticamente** a DLL necessária para ultrapassar o limite nativo do jogo. Os jogadores devem instalar o complemento nativo separadamente. Não é necessário instalar ou habilitar o HyperSmooth antigo.
 
-## Baixar
+## DLL para quem veio da Workshop
+
+**Já assinou o Desbloquear QPS na Steam? Não instale o mod outra vez. Baixe apenas a DLL.**
+
+**[BAIXAR ZIP PEQUENO — DLL + INI](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip)**
+
+Prefere os arquivos separados? [Baixar dinput8.dll](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dinput8.dll) · [Baixar dst_fps.ini](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dst_fps.ini).
+
+**Instalação manual em três passos:**
+
+1. **Feche** o Don't Starve Together. Baixe o ZIP pequeno acima e extraia.
+2. Abra a subpasta `bin64` do ZIP. Copie `dinput8.dll` e, se ainda não tiver, `dst_fps.ini` para a pasta `Steam\steamapps\common\Don't Starve Together\bin64` do jogo. Não copie a pasta inteira dentro de outra `bin64`.
+3. Abra o jogo. Deixe **somente Desbloquear QPS** ativado nos **Mods de Cliente** e selecione o FPS desejado.
+
+**Importante:** se já existir outra `dinput8.dll`, pare e faça um backup antes de substituí-la; ela pode pertencer a outro mod. Se já houver `dst_fps.ini`, preserve as configurações que você usa. O ZIP inclui instruções e um instalador opcional com backup: [guia simples da DLL](docs/BAIXAR_DLL.md).
+
+**Link único para colocar na Workshop:** https://github.com/eduardonnn/Desbloquear-QPS — os downloads ficam destacados no início desta página. A Workshop não instala DLLs na pasta do jogo automaticamente.
+
+## Outros downloads
 
 - **[Versão completa com DLL e instalador](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest)** — indicada para todos os jogadores do Windows 64 bits.
 - [Pacote completo armazenado no repositório](pacotes/Desbloquear-QPS-v1.0.0-Completo.zip).

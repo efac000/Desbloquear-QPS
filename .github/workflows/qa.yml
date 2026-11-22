@@ -53,3 +53,18 @@ jobs:
           $destino=Join-Path $jogo "bin64/dinput8.dll"
           if ((Get-FileHash $destino -Algorithm SHA256).Hash -ne (Get-FileHash "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL diferente" }
           Write-Host "PASS: simulação, somente DLL e instalação local"
+          # Confere também o ZIP reduzido que os assinantes da Workshop vão baixar.
+          $zip = "pacotes/Desbloquear-QPS-DLL-Windows-x64.zip"
+          $extraido = Join-Path $env:RUNNER_TEMP "QPS-DLL-Standalone"
+          Expand-Archive -LiteralPath $zip -DestinationPath $extraido
+          $standalone = Join-Path $extraido "Desbloquear QPS"
+          $instalador = Join-Path $standalone "tools/instalar_local.ps1"
+          if (!(Test-Path -LiteralPath $instalador)) { throw "O ZIP da DLL não tem instalador" }
+          $jogoDll = Join-Path $env:RUNNER_TEMP "DST-QPS-DLL-Only"
+          New-Item -ItemType Directory -Force -Path (Join-Path $jogoDll "mods"),(Join-Path $jogoDll "bin64") | Out-Null
+          & powershell -NoProfile -ExecutionPolicy Bypass -File $instalador -PastaJogo $jogoDll -SomenteDLL -Aplicar
+          if ($LASTEXITCODE -ne 0) { throw "Instalação do ZIP independente falhou" }
+          if (Test-Path -LiteralPath (Join-Path $jogoDll "mods/desbloquear-qps")) { throw "ZIP de DLL duplicou o mod" }
+          $dllNoJogo = Join-Path $jogoDll "bin64/dinput8.dll"
+          if ((Get-FileHash -LiteralPath $dllNoJogo -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL do ZIP independente divergente" }
+          Write-Host "PASS: instalador do ZIP de DLL, sem cópia redundante do mod"
