@@ -8,6 +8,12 @@ Edição mantida por **café**. Desbloqueia a seleção de FPS do DST, oferece i
 
 **Importante:** o mod da Steam Workshop **não instala automaticamente** a DLL necessária para ultrapassar o limite nativo do jogo. Os jogadores devem instalar o complemento nativo separadamente. Não é necessário instalar ou habilitar o HyperSmooth antigo.
 
+## Página de download simplificada
+
+**[ABRIR PÁGINA DE DOWNLOAD — Desbloquear QPS](https://eduardonnn.github.io/Desbloquear-QPS/)**
+
+A página mostra automaticamente a versão atual, um botão grande para **Baixar DLL + INI** e três passos simples de instalação. **Este é o link recomendado para a descrição da Steam Workshop.**
+
 ## DLL para quem veio da Workshop
 
 **Já assinou o Desbloquear QPS na Steam? Não instale o mod outra vez. Baixe apenas a DLL.**

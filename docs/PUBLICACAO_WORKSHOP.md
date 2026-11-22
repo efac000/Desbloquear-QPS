@@ -28,7 +28,7 @@ Para os jogadores, basta colocar este texto na descrição do item:
 > **Para desbloquear FPS, instale a DLL separadamente (Windows 64 bits).**
 > A Steam Workshop não instala DLLs na pasta do jogo. Acesse a página abaixo, baixe o ZIP pequeno **DLL + INI** e siga os três passos no início:
 >
-> https://github.com/eduardonnn/Desbloquear-QPS
+> https://eduardonnn.github.io/Desbloquear-QPS/
 >
 > Se já assinou este mod pela Workshop, não instale outra cópia do mod.
 
@@ -70,3 +70,11 @@ Na página do GitHub há também os downloads diretos de `dinput8.dll` e `dst_fp
 - [ ] Registrar o Workshop ID, URL e versão no histórico do GitHub.
 
 **Não é correto prometer FPS constantes ou compatibilidade universal**. Os ganhos dependem do hardware, do driver, da versão do DST e dos mods em uso.
+
+## Página própria de downloads (GitHub Pages)
+
+Link curto e visual para divulgar na Steam:
+
+**https://eduardonnn.github.io/Desbloquear-QPS/**
+
+Mostra a versão atual, o ZIP pequeno com DLL + INI e três passos para instalação. Mantenha o repositório do GitHub também como fonte de código e licenças. Caso o site esteja indisponível, use https://github.com/eduardonnn/Desbloquear-QPS/releases/latest.

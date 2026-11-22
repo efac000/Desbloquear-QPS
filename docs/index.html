@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Baixe a DLL do Desbloquear QPS para Don't Starve Together. Versão atual, download direto e instruções de instalação em três passos.">
+  <meta name="theme-color" content="#12171d">
+  <title>Desbloquear QPS — Baixar DLL</title>
+  <link rel="icon" type="image/png" href="./icone-workshop-512.png">
+  <style>
+    :root { color-scheme: dark; --bg:#10151b; --card:#1a222b; --card2:#202b36; --border:#34434e; --text:#f3f5f1; --muted:#a9b9c3; --green:#a8f2ad; --black:#101713; --focus:#d0f8c6; }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-height:100vh; color:var(--text); background:radial-gradient(ellipse 900px 500px at 50% -10%,#263b39 0%,transparent 68%),var(--bg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+    a { color:inherit; text-underline-offset:4px; }
+    a:focus-visible { outline:3px solid var(--focus); outline-offset:4px; border-radius:5px; }
+    .shell { max-width:860px; padding:0 22px; margin:0 auto; }
+    header { border-bottom:1px solid #26323a; }
+    .top { min-height:70px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .identity { display:flex; align-items:center; gap:12px; font-weight:750; letter-spacing:.1px; font-size:17px; }
+    .identity img { width:38px; height:38px; border-radius:10px; }
+    .top nav a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:600; }
+    .top nav a:hover { color:var(--text); }
+    main { padding-top:44px; padding-bottom:60px; }
+    .hero { text-align:center; }
+    .hero-icon { height:100px; width:100px; border-radius:23px; border:1px solid #3d4c51; box-shadow:0 10px 45px #0005; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:4px 13px; border:1px solid #3d574b; border-radius:999px; color:var(--green); background:#1c3228; font-size:14px; font-weight:700; margin-top:20px; }
+    .eyebrow::before { content:""; width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow:0 0 10px #a8f2ad77; }
+    h1 { font-size:clamp(31px,6vw,48px); line-height:1.18; letter-spacing:-1.5px; margin:20px 0 12px; }
+    .lead { color:var(--muted); margin:0 auto 27px; max-width:610px; font-size:17px; }
+    .download { display:flex; flex-direction:column; align-items:center; gap:9px; }
+    .btn { width:min(100%,420px); min-height:60px; padding:15px 18px; text-decoration:none; border-radius:13px; font-size:19px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s,background .12s; }
+    .btn:hover { transform:translateY(-2px); }
+    .btn-main { background:var(--green); color:var(--black); border:1px solid #c9fbd0; box-shadow:0 8px 38px #58bd7140; }
+    .btn-main:hover { background:#c6fbc9; }
+    .size { color:var(--muted); font-size:13px; margin:0; }
+    .direct { color:var(--muted); font-size:14px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:13px 0 0; }
+    .direct a { color:#d6e9f3; }
+    .notice { margin:33px auto 0; max-width:740px; padding:15px 18px; text-align:left; border:1px solid #516449; border-radius:12px; background:#202c22; font-size:14px; color:#e1eddb; }
+    section { margin-top:48px; }
+    h2 { font-size:24px; line-height:1.25; letter-spacing:-.5px; margin:0 0 10px; }
+    .intro { color:var(--muted); margin:0 0 20px; }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; }
+    .step { background:var(--card); border:1px solid var(--border); border-radius:15px; padding:19px; }
+    .num { display:flex; align-items:center; justify-content:center; height:31px; width:31px; border-radius:10px; background:#30473c; color:var(--green); font-weight:850; margin-bottom:13px; }
+    .step h3 { font-size:17px; line-height:1.35; margin:0 0 8px; }
+    .step p { color:var(--muted); font-size:14px; margin:0; }
+    code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.91em; overflow-wrap:anywhere; color:#c8f4d3; }
+    .path { padding:13px 16px; margin:17px 0 0; border:1px solid var(--border); border-radius:10px; background:#151d25; color:#c8f4d3; overflow-wrap:anywhere; font-size:14px; }
+    .hint { margin:14px 0 0; color:var(--muted); font-size:14px; }
+    .mini { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+    .mini .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; }
+    .mini h3 { font-size:17px; margin:0 0 7px; }
+    .mini p { color:var(--muted); font-size:14px; margin:0 0 9px; }
+    .mini a { color:#cae7fa; font-weight:700; font-size:14px; }
+    .faq { padding:19px; border:1px solid var(--border); border-radius:15px; background:var(--card); }
+    .faq p { margin:0 0 13px; color:var(--muted); font-size:14px; }
+    .faq p:last-child { margin:0; }
+    .faq strong { color:var(--text); }
+    footer { padding:20px 0 35px; border-top:1px solid #29343c; font-size:13px; color:var(--muted); }
+    footer .shell { display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; }
+    footer a { color:var(--muted); }
+    @media(max-width:640px) { main { padding-top:30px; } .steps,.mini { grid-template-columns:1fr; } .step { padding:16px; } section { margin-top:38px; } h2 { font-size:22px; } .lead { font-size:16px; } .top nav { display:none; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .btn { transition:none; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="shell top">
+    <div class="identity"><img src="./icone-workshop-512.png" alt="">Desbloquear QPS</div>
+    <nav><a href="#como-instalar">Como instalar</a> &nbsp; · &nbsp; <a href="https://github.com/eduardonnn/Desbloquear-QPS">GitHub</a></nav>
+  </div>
+</header>
+<main class="shell">
+  <div class="hero">
+    <img class="hero-icon" src="./icone-workshop-512.png" alt="Ícone do Desbloquear QPS: chave inglesa e parafuso" width="100" height="100">
+    <div><span id="version" class="eyebrow">Versão atual: v1.0.0</span></div>
+    <h1>Baixe a DLL do<br>Desbloquear QPS</h1>
+    <p class="lead">Já instalou o mod pela Steam Workshop? Baixe somente o complemento para liberar as opções de FPS no <strong>Don't Starve Together</strong>.</p>
+    <div class="download">
+      <a class="btn btn-main" href="https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip" download aria-label="Baixar ZIP com DLL e INI para Windows 64 bits">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 18v3h16v-3"/></svg>
+        Baixar DLL + INI
+      </a>
+      <p class="size">Windows 64 bits · ZIP pequeno (~220 KB) · Instalação manual ou com script</p>
+    </div>
+    <p class="direct">Prefere separado? <a href="https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dinput8.dll">Baixar dinput8.dll</a> <span aria-hidden="true">·</span> <a href="https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dst_fps.ini">Baixar dst_fps.ini</a></p>
+  </div>
+  <div class="notice"><strong>Atenção:</strong> a Steam Workshop instala o mod, mas não coloca a DLL na pasta <code>bin64</code> do jogo. É por isso que o download acima é necessário para desbloquear o FPS. Você <strong>não precisa instalar o mod duas vezes</strong>.</div>
+
+  <section id="como-instalar">
+    <h2>Instale em 3 passos</h2>
+    <p class="intro">Sem cadastro adicional, sem substituir o mod da Workshop e sem mexer nos seus saves.</p>
+    <div class="steps">
+      <article class="step"><div class="num">1</div><h3>Baixe e extraia</h3><p>Feche o jogo. Clique em <strong>Baixar DLL + INI</strong> e extraia o ZIP para qualquer pasta.</p></article>
+      <article class="step"><div class="num">2</div><h3>Copie para <code>bin64</code></h3><p>Abra a pasta <code>Desbloquear QPS/bin64</code> do ZIP. Copie <code>dinput8.dll</code> para a pasta <code>bin64</code> do jogo. Copie <code>dst_fps.ini</code> só se ainda não existir.</p></article>
+      <article class="step"><div class="num">3</div><h3>Abra o DST</h3><p>Ative <strong>Desbloquear QPS</strong> em <strong>Mods de Cliente</strong>, aplique e escolha o limite de FPS nas configurações.</p></article>
+    </div>
+    <div class="path"><strong>Pasta padrão do jogo:</strong><br><code>C:\Program Files (x86)\Steam\steamapps\common\Don't Starve Together\bin64</code></div>
+    <p class="hint">Seu jogo está em outra unidade? Abra <strong>Steam → Biblioteca → Don't Starve Together → Propriedades → Arquivos instalados → Procurar</strong> e entre na subpasta <code>bin64</code>.</p>
+  </section>
+
+  <section>
+    <h2>Outros downloads</h2>
+    <p class="intro">Para quem prefere instalar tudo manualmente ou quer conferir os arquivos técnicos.</p>
+    <div class="mini">
+      <div class="card"><h3>Versão completa</h3><p>Mod, DLL, instalador, código-fonte e documentação em um só ZIP.</p><a href="https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-v1.0.0-Completo.zip">Baixar pacote completo</a></div>
+      <div class="card"><h3>Código e atualizações</h3><p>Histórico, licenças, novidades e suporte no repositório público.</p><a href="https://github.com/eduardonnn/Desbloquear-QPS">Abrir projeto no GitHub</a></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dúvidas rápidas</h2>
+    <div class="faq">
+      <p><strong>Já existe uma <code>dinput8.dll</code>?</strong> Não substitua sem identificar a origem e fazer backup: ela pode pertencer a outro complemento. O ZIP inclui um instalador opcional que detecta conflitos.</p>
+      <p><strong>Meu monitor tem 144 Hz. Posso selecionar 240 FPS?</strong> Sim, mas o monitor continua exibindo até 144 atualizações completas por segundo. O FPS real depende do hardware, e desativar a sincronização pode gerar <em>tearing</em>.</p>
+      <p><strong>Funciona em servidores?</strong> É um mod de cliente, sem instalação no servidor. O complemento nativo distribuído é para Windows 64 bits.</p>
+      <p><strong>Não quero instalar manualmente.</strong> O ZIP inclui instruções e o script <code>tools/instalar_local.ps1</code>, que permite conferir os arquivos antes de instalar, sem duplicar o mod.</p>
+    </div>
+    <p class="hint">Precisa de mais detalhes? <a href="https://github.com/eduardonnn/Desbloquear-QPS/blob/main/docs/BAIXAR_DLL.md">Leia o guia completo em português</a>.</p>
+  </section>
+</main>
+<footer>
+  <div class="shell">
+    <span>Desbloquear QPS · Edição café · Base HyperSmooth 2.5.0 sob licença MIT</span>
+    <span><a href="https://github.com/eduardonnn/Desbloquear-QPS/blob/main/LICENSE">Licenças</a> · <a href="https://github.com/eduardonnn/Desbloquear-QPS/releases/latest">Todas as versões</a></span>
+  </div>
+</footer>
+<script>
+  // Exibe a tag mais recente quando a API estiver acessível; a página e
+  // os downloads continuam funcionais mesmo sem JavaScript ou rede da API.
+  (function () {
+    var el = document.getElementById('version');
+    fetch('https://api.github.com/repos/eduardonnn/Desbloquear-QPS/releases/latest', {headers:{'Accept':'application/vnd.github+json'}})
+      .then(function (r) { if(!r.ok) throw new Error('Sem dados'); return r.json(); })
+      .then(function (data) {
+        if (typeof data.tag_name === 'string' && /^v?\d+\.\d+\.\d+/.test(data.tag_name)) {
+          el.textContent = 'Versão atual: ' + data.tag_name;
+        }
+      }).catch(function(){ /* mantém a versão estática */ });
+  }());
+</script>
+</body>
+</html>

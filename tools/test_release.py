@@ -134,3 +134,16 @@ assert(type(env.keys) == "table" and #env.keys > 70)
 test = subprocess.run(["lua","-e",bare],cwd=str(ROOT),capture_output=True,text=True)
 assert test.returncode == 0,test.stderr
 print("PASS: textos da edição PT-BR / sandbox do modinfo / guias de instalação")
+
+
+# Página estática de download (publicação via GitHub Pages em main/docs).
+site=(ROOT/"docs"/"index.html").read_text(encoding="utf-8")
+assert '<html lang="pt-BR">' in site
+assert "Versão atual: v1.0.0" in site
+assert "Desbloquear-QPS-DLL-Windows-x64.zip" in site
+assert "releases/latest/download/dinput8.dll" in site
+assert "releases/latest/download/dst_fps.ini" in site
+assert "Instale em 3 passos" in site
+assert (ROOT/"docs"/".nojekyll").is_file()
+assert (ROOT/"docs"/"icone-workshop-512.png").read_bytes()==(ROOT/"icone-workshop-512.png").read_bytes()
+print("PASS: página PT-BR, versão atual, links diretos, ícone e instruções")
