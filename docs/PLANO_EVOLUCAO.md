@@ -41,7 +41,7 @@ Esta é a referência para trabalhos futuros. Consulte também HISTORICO.md, REA
 - Roadmap por versões (mudanças pequenas com CI e cliente), sem alegações de 100% compatibilidade sem evidência.
 
 ## Como continuar
-Consultar a main de eduardonnn/Desbloquear-QPS como fonte atual; a PR #58 do repositório antigo é referência histórica. Revisar o diff antes de cada alteração. Rodar tests, icon build e native build no worktree; não substituir a DLL jogável automaticamente. Atualizar HISTORICO/QA/este documento quando confirmar resultados. Publicar Steam somente após validar a identificação da página e as imagens.
+Consultar a main de efac000/Desbloquear-QPS como fonte atual; a PR #58 do repositório antigo é referência histórica. Revisar o diff antes de cada alteração. Rodar tests, icon build e native build no worktree; não substituir a DLL jogável automaticamente. Atualizar HISTORICO/QA/este documento quando confirmar resultados. Publicar Steam somente após validar a identificação da página e as imagens.
 
 ## Melhorias específicas da distribuição pública
 - Validar o instalador em cenário de assinatura da Workshop e em instalação local sem duplicação do mod.

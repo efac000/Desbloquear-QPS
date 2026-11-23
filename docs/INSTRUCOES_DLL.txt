@@ -33,6 +33,6 @@ Simulação (não grava): powershell -NoProfile -ExecutionPolicy Bypass -File .\
 Instalação: acrescente -Aplicar ao final.
 
 Link único para instruções e downloads:
-https://github.com/eduardonnn/Desbloquear-QPS
+https://github.com/efac000/Desbloquear-QPS
 
 DLL destinada ao Windows 64 bits. A taxa real de FPS depende do hardware.

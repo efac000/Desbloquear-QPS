@@ -10,7 +10,7 @@ Edição mantida por **café**. Desbloqueia a seleção de FPS do DST, oferece i
 
 ## Página de download simplificada
 
-**[ABRIR PÁGINA DE DOWNLOAD — Desbloquear QPS](https://eduardonnn.github.io/Desbloquear-QPS/)**
+**[ABRIR PÁGINA DE DOWNLOAD — Desbloquear QPS](https://efac000.github.io/Desbloquear-QPS/)**
 
 A página mostra automaticamente a versão atual, um botão grande para **Baixar DLL + INI** e três passos simples de instalação. **Este é o link recomendado para a descrição da Steam Workshop.**
 
@@ -18,7 +18,7 @@ A página mostra automaticamente a versão atual, um botão grande para **Baixar
 
 **Assinou o Desbloquear QPS pela Steam Workshop?** Instale somente a DLL.
 
-1. [Baixe o ZIP pequeno (DLL + INI)](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip) e extraia todos os arquivos.
+1. [Baixe o ZIP pequeno (DLL + INI)](https://github.com/efac000/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip) e extraia todos os arquivos.
 2. Abra a pasta extraída Desbloquear QPS e dê dois cliques em **INSTALAR DLL.bat**. Confirme a autorização do Windows, se for solicitada.
 
 Pronto! O instalador encontra a pasta do DST, coloca somente os arquivos nativos necessários, preserva o INI e faz backups. **Não instala uma segunda cópia do mod.** Se já existir outra DLL diferente, para por segurança. Feche o jogo antes de executar.
@@ -29,9 +29,9 @@ Sem comandos ou PowerShell. Consulte o [guia simples](docs/BAIXAR_DLL.md) para m
 
 **Já assinou o Desbloquear QPS na Steam? Não instale o mod outra vez. Baixe apenas a DLL.**
 
-**[BAIXAR ZIP PEQUENO — DLL + INI](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip)**
+**[BAIXAR ZIP PEQUENO — DLL + INI](https://github.com/efac000/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip)**
 
-Prefere os arquivos separados? [Baixar dinput8.dll](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dinput8.dll) · [Baixar dst_fps.ini](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/dst_fps.ini).
+Prefere os arquivos separados? [Baixar dinput8.dll](https://github.com/efac000/Desbloquear-QPS/releases/latest/download/dinput8.dll) · [Baixar dst_fps.ini](https://github.com/efac000/Desbloquear-QPS/releases/latest/download/dst_fps.ini).
 
 **Instalação manual em três passos:**
 
@@ -41,11 +41,11 @@ Prefere os arquivos separados? [Baixar dinput8.dll](https://github.com/eduardonn
 
 **Importante:** se já existir outra `dinput8.dll`, pare e faça um backup antes de substituí-la; ela pode pertencer a outro mod. Se já houver `dst_fps.ini`, preserve as configurações que você usa. O ZIP inclui instruções e um instalador opcional com backup: [guia simples da DLL](docs/BAIXAR_DLL.md).
 
-**Link único para colocar na Workshop:** https://github.com/eduardonnn/Desbloquear-QPS — os downloads ficam destacados no início desta página. A Workshop não instala DLLs na pasta do jogo automaticamente.
+**Link único para colocar na Workshop:** https://github.com/efac000/Desbloquear-QPS — os downloads ficam destacados no início desta página. A Workshop não instala DLLs na pasta do jogo automaticamente.
 
 ## Outros downloads
 
-- **[Versão completa com DLL e instalador](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest)** — indicada para todos os jogadores do Windows 64 bits.
+- **[Versão completa com DLL e instalador](https://github.com/efac000/Desbloquear-QPS/releases/latest)** — indicada para todos os jogadores do Windows 64 bits.
 - [Pacote completo armazenado no repositório](pacotes/Desbloquear-QPS-v1.0.0-Completo.zip).
 - [Pacote exclusivo para Steam Workshop](pacotes/Desbloquear-QPS-v1.0.0-Workshop.zip).
 - [Ícone da Workshop, 512 × 512](icone-workshop-512.png).

@@ -24,7 +24,7 @@ A imagem principal `preview.png` tem **512 × 512 pixels**; `icone-workshop-512.
 ## Texto recomendado para divulgar
 
 > Para desbloquear os FPS, baixe o ZIP pequeno no site oficial:
-> https://eduardonnn.github.io/Desbloquear-QPS/
+> https://efac000.github.io/Desbloquear-QPS/
 >
 > **Extraia o ZIP, abra a pasta Desbloquear QPS e execute INSTALAR DLL.bat (dois cliques).**
 > O instalador encontra o jogo automaticamente. Feche o DST antes de instalar.
@@ -38,7 +38,7 @@ Para os jogadores, basta colocar este texto na descrição do item:
 > **Para desbloquear FPS, instale a DLL separadamente (Windows 64 bits).**
 > A Steam Workshop não instala DLLs na pasta do jogo. Acesse a página abaixo, baixe o ZIP pequeno **DLL + INI** e siga os três passos no início:
 >
-> https://eduardonnn.github.io/Desbloquear-QPS/
+> https://efac000.github.io/Desbloquear-QPS/
 >
 > Se já assinou este mod pela Workshop, não instale outra cópia do mod.
 
@@ -58,7 +58,7 @@ Na página do GitHub há também os downloads diretos de `dinput8.dll` e `dst_fp
 >
 > **IMPORTANTE — DLL necessária para desbloquear FPS:** a Steam Workshop instala os arquivos do mod, mas **não consegue instalar automaticamente `dinput8.dll` em `bin64`**. Para FPS acima do limite nativo, baixe o pacote completo e siga o guia de instalação da DLL:
 >
-> https://github.com/eduardonnn/Desbloquear-QPS
+> https://github.com/efac000/Desbloquear-QPS
 >
 > Se você já assinou este mod pela Workshop, use o instalador do GitHub com a opção **`-SomenteDLL`** para evitar duplicação.
 >
@@ -85,6 +85,6 @@ Na página do GitHub há também os downloads diretos de `dinput8.dll` e `dst_fp
 
 Link curto e visual para divulgar na Steam:
 
-**https://eduardonnn.github.io/Desbloquear-QPS/**
+**https://efac000.github.io/Desbloquear-QPS/**
 
-Mostra a versão atual, o ZIP pequeno com DLL + INI e três passos para instalação. Mantenha o repositório do GitHub também como fonte de código e licenças. Caso o site esteja indisponível, use https://github.com/eduardonnn/Desbloquear-QPS/releases/latest.
+Mostra a versão atual, o ZIP pequeno com DLL + INI e três passos para instalação. Mantenha o repositório do GitHub também como fonte de código e licenças. Caso o site esteja indisponível, use https://github.com/efac000/Desbloquear-QPS/releases/latest.

@@ -30,7 +30,7 @@ O pacote Workshop NÃO inclui instalação automática de DLL em bin64. O readme
 
 ## Preparação do repositório público separado
 
-- Fonte de verdade deste lançamento: https://github.com/eduardonnn/Desbloquear-QPS (main).
+- Fonte de verdade deste lançamento: https://github.com/efac000/Desbloquear-QPS (main).
 - O conteúdo foi importado do commit bb103833 do catálogo anterior, que integra a edição da PR #58. O repositório novo não depende da instalação do projeto antigo.
 - Corrigidas mensagens do console próprias do mod, opções Ativado/Desativado e rótulos especiais de teclas para PT-BR, sem alterar códigos internos ou DLL.
 - São distribuídos dois pacotes independentes: completo com bin64 e fontes, e Workshop apenas com Lua/shaders/ícones. A Workshop não instala a DLL em bin64.

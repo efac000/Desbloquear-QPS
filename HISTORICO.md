@@ -27,7 +27,7 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 
 ## v1.0.0 — organização para repositório público e publicação
 
-- Código completo transferido para a raiz do repositório público eduardonnn/Desbloquear-QPS, mantendo licenças MIT e bibliotecas de terceiros.
+- Código completo transferido para a raiz do repositório público efac000/Desbloquear-QPS, mantendo licenças MIT e bibliotecas de terceiros.
 - Revistos textos próprios da interface, mensagens de console, opções Ativado/Desativado e descrições de teclas; sem alterar códigos Lua/API.
 - Novo instalador com opção `-SomenteDLL` para assinantes da Workshop, evitando dupla instalação; mantém simulação, backups, integridade e prevenção de conflitos de DLL.
 - Guia de instalação, FAQ, texto de divulgação, imagem 512x512 e pacotes prontos para baixar.

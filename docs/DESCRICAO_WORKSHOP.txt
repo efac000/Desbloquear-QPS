@@ -1,0 +1,142 @@
+DESCRIÇÃO
+Desbloquear QPS — FPS e Carregamento Rápido
+
+Desbloqueie novas possibilidades de desempenho no Don't Starve Together!
+
+O Desbloquear QPS permite configurar taxas de quadros superiores ao limite original do jogo, aprimora a suavidade das animações e movimentações, otimiza o carregamento e oferece melhorias de desempenho e recursos visuais opcionais.
+
+O mod funciona exclusivamente no cliente, sem exigir instalação no servidor, e foi desenvolvido para preservar a experiência original do DST.
+
+ATENÇÃO — INSTALAÇÃO DA DLL NECESSÁRIA
+
+Para desbloquear o FPS, é necessário instalar o complemento DLL.
+
+A Steam Workshop instala os arquivos do mod, mas não consegue instalar automaticamente a DLL na pasta do jogo.
+
+INSTALAÇÃO SIMPLIFICADA:
+
+1. Inscreva-se neste mod pela Steam Workshop.
+2. Acesse a página oficial e baixe o ZIP da DLL.
+3. Extraia os arquivos e execute INSTALAR DLL.bat com dois cliques.
+4. O instalador localizará a pasta do jogo e instalará os arquivos necessários.
+
+[url=https://efac000.github.io/Desbloquear-QPS/]CLIQUE AQUI PARA BAIXAR A DLL E INSTALAR[/url]
+
+Não é necessário instalar o mod duas vezes! Se você já se inscreveu pela Workshop, basta instalar a DLL.
+
+O instalador é destinado ao Windows 64 bits, preserva configurações existentes e possui proteção contra conflitos com outras DLLs.
+
+RECURSOS PRINCIPAIS
+
+1. Desbloqueio de FPS
+
+Configure o limite de quadros conforme sua preferência:
+
+60 FPS
+120 FPS
+144 FPS
+165 FPS
+240 FPS
+360 FPS
+Sem limite
+
+O complemento nativo permite ultrapassar o limite original de 60 FPS e inclui uma correção de sincronização que evita o bloqueio indevido à frequência do monitor em determinadas configurações.
+
+Importante: os valores selecionados são metas de renderização. O FPS efetivamente alcançado depende do hardware e da carga do jogo. Um monitor de 144 Hz continua limitado à sua frequência física de atualização.
+
+2. Animações e movimentações mais suaves
+
+A interpolação de animações aprimora a apresentação visual em taxas elevadas de FPS, proporcionando movimentos mais fluidos sem acelerar artificialmente a simulação do mundo.
+
+Inclui ajustes para:
+
+Animações e movimentações dos personagens.
+Suavização da câmera.
+Menus e elementos da interface.
+Minimapa e indicadores de posicionamento.
+
+3. Otimizações de desempenho
+
+O mod reúne otimizações para reduzir operações desnecessárias e melhorar a eficiência de determinadas rotinas do cliente.
+
+Ajustes de utilização da CPU.
+Otimizações de rotinas Lua e coleta de lixo (GC).
+Redução de processamento desnecessário em altas taxas de atualização.
+Melhorias no gerenciamento de recursos e interfaces.
+Otimizações para situações de combate e maior carga visual.
+
+Os resultados variam conforme o computador e os outros mods instalados.
+
+4. Carregamento mais rápido
+
+Inclui melhorias voltadas à navegação e ao carregamento de recursos do DST.
+
+Transições otimizadas entre superfície e cavernas.
+Reutilização de determinados recursos previamente carregados.
+Cache de informações da lista de mods.
+Redução de esperas desnecessárias em algumas telas e consultas.
+
+A primeira visita a uma região ainda poderá exigir o carregamento normal dos seus arquivos.
+
+5. Melhorias visuais opcionais
+
+Personalize a aparência do jogo sem alterar obrigatoriamente seu estilo artístico.
+
+Entre os recursos disponíveis estão:
+
+Filtragem anisotrópica.
+Ajustes de iluminação.
+Nitidez e suavização visual.
+Sombras de contato suaves.
+Aprimoramentos de litoral e solo úmido.
+Bloom suave.
+Tons de ilustração e vinheta.
+
+O perfil Original é o padrão. Os efeitos gráficos adicionais permanecem opcionais e desativados inicialmente.
+
+6. HUD de desempenho e atalhos
+
+Monitore o desempenho diretamente no jogo com indicadores de:
+
+FPS em tempo real.
+1% Low.
+Estatísticas de desempenho disponíveis no complemento nativo.
+
+O mod também oferece atalhos configuráveis para alternar recursos e limites de FPS.
+
+Quando o HUD está oculto, rotinas desnecessárias de atualização e formatação das métricas são evitadas.
+
+COMPATIBILIDADE
+
+Don't Starve Together.
+Mod exclusivo do cliente.
+Compatível com partidas individuais e participação em servidores públicos, sujeito às limitações normais de compatibilidade.
+Não exige instalação pelo anfitrião.
+Complemento DLL destinado ao Windows 64 bits.
+Não é necessário instalar o HyperSmooth ou Café Smooth antigo.
+
+Não utilize duas versões deste mod simultaneamente.
+
+O desbloqueio da sincronização pode provocar screen tearing em determinadas configurações. Caso isso aconteça, consulte as opções disponíveis no guia de instalação.
+
+DOWNLOAD, INSTALAÇÃO E ATUALIZAÇÕES
+
+Acesse a página oficial para encontrar a versão atual, os arquivos necessários e instruções simples de instalação:
+
+[url=https://efac000.github.io/Desbloquear-QPS/]PÁGINA OFICIAL — BAIXAR DLL[/url]
+
+Código-fonte, documentação e histórico de atualizações:
+
+[url=https://github.com/efac000/Desbloquear-QPS]GitHub — Desbloquear QPS[/url]
+
+CRÉDITOS
+
+Desbloquear QPS
+
+Edição, tradução brasileira, identidade visual, correções, melhorias e manutenção: café.
+
+Base técnica derivada do HyperSmooth 2.5.0, de Hakimi Tech Lab (wangxu1428), sob licença MIT, com os créditos e avisos legais preservados.
+
+Versão atual: 1.0.0
+
+O objetivo do projeto é oferecer mais liberdade de configuração, maior fluidez visual e uma experiência de uso simples, preservando as características fundamentais do Don't Starve Together.

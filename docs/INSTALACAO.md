@@ -1,6 +1,6 @@
 ## Para quem instalou o mod pela Steam Workshop
 
-1. Baixe o [ZIP pequeno da DLL + INI](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip).
+1. Baixe o [ZIP pequeno da DLL + INI](https://github.com/efac000/Desbloquear-QPS/releases/latest/download/Desbloquear-QPS-DLL-Windows-x64.zip).
 2. Extraia todos os arquivos e dê **dois cliques em INSTALAR DLL.bat**.
 3. Autorize o Windows se necessário e espere a mensagem de sucesso.
 
@@ -14,7 +14,7 @@ O mod possui **duas partes distintas**: os scripts do cliente (obtidos pela Work
 
 ## Primeiro: baixe os arquivos
 
-Acesse [GitHub Releases](https://github.com/eduardonnn/Desbloquear-QPS/releases/latest) e baixe **Desbloquear-QPS-v1.0.0-Completo.zip**. Extraia o arquivo ZIP; a pasta extraída se chama `Desbloquear QPS`.
+Acesse [GitHub Releases](https://github.com/efac000/Desbloquear-QPS/releases/latest) e baixe **Desbloquear-QPS-v1.0.0-Completo.zip**. Extraia o arquivo ZIP; a pasta extraída se chama `Desbloquear QPS`.
 
 A pasta contém, entre outros:
 
@@ -127,4 +127,4 @@ O complemento utiliza `Don't Starve Together\bin64\dst_fps.ini`.
 
 Não distribua DLLs renomeadas ou modificadas sem disponibilizar o código-fonte correspondente. O hash da DLL distribuída está registrado nos arquivos de QA. Código e avisos de licença em [LICENSE](../LICENSE) e [licenses/](../licenses/).
 
-Para problemas reproduzíveis, abra uma [issue](https://github.com/eduardonnn/Desbloquear-QPS/issues) com versão do DST, Windows, GPU, lista de mods e logs relevantes — sem dados pessoais.
+Para problemas reproduzíveis, abra uma [issue](https://github.com/efac000/Desbloquear-QPS/issues) com versão do DST, Windows, GPU, lista de mods e logs relevantes — sem dados pessoais.
