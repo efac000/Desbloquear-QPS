@@ -107,7 +107,6 @@ std::atomic<FARPROC> g_pDllUnregisterServer{nullptr};
 std::atomic<FARPROC> g_pGetdfDIJoystick{nullptr};
 
 SRWLOCK g_logLock = SRWLOCK_INIT;
-HANDLE g_workerThread = nullptr;
 HANDLE g_prewarmThread = nullptr;
 std::atomic<LONG> g_stopFlag{0};
 bool g_timerBoosted = false;
@@ -4818,7 +4817,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         HMODULE pinned = nullptr;
         GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_PIN,
                            reinterpret_cast<LPCWSTR>(&DllMain), &pinned);
-        g_workerThread = CreateThread(nullptr, 0, WorkerProc, nullptr, 0, nullptr);
+        // No thread join is needed. Release the handle while the worker runs.
+        if (HANDLE worker = CreateThread(nullptr, 0, WorkerProc, nullptr, 0, nullptr)) {
+            CloseHandle(worker);
+        }
     } else if (reason == DLL_PROCESS_DETACH) {
         g_stopFlag.store(1, std::memory_order_relaxed);
         // Process terminating (lpReserved != nullptr): OS reclaims threads, timers, and DLLs atomically.
