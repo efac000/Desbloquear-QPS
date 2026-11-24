@@ -310,14 +310,14 @@ struct FrameTimeRing {
 
     void ComputeStats(double& avgFps, double& low1Fps, double& p99Ms, double& jitterMs) {
         float buf[kCap];
-        size_t n = 0;
-        size_t startIdx = 0;
         AcquireSRWLockShared(&lock);
-        n = count;
-        if (n > 0) {
-            startIdx = (count < kCap) ? 0 : writeIdx;
-            for (size_t i = 0; i < n; ++i) {
-                buf[i] = samplesUs[(startIdx + i) & (kCap - 1)];
+        const size_t n = count;
+        if (n >= 4) {
+            const size_t startIdx = (n < kCap) ? 0 : writeIdx;
+            const size_t firstCount = std::min(n, kCap - startIdx);
+            std::memcpy(buf, samplesUs + startIdx, firstCount * sizeof(float));
+            if (firstCount < n) {
+                std::memcpy(buf + firstCount, samplesUs, (n - firstCount) * sizeof(float));
             }
         }
         ReleaseSRWLockShared(&lock);

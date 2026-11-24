@@ -101,7 +101,7 @@ try {
   if (Test-Path -LiteralPath $oldDll -PathType Leaf) {
     $h1=(Get-FileHash -LiteralPath $oldDll -Algorithm SHA256).Hash
     $h2=(Get-FileHash -LiteralPath (Join-Path $base "bin64\dinput8.dll") -Algorithm SHA256).Hash
-    if ($h1 -ne $h2 -and $h1 -ne "2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e" -and $h1 -ne "080AD8F4AA5A25A2DF8EDE6B4E9AF1B20CCFCDC1033B6AC4E10BA13F5A8D50B4") {
+    if ($h1 -ne $h2 -and $h1 -ne "2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e" -and $h1 -ne "080AD8F4AA5A25A2DF8EDE6B4E9AF1B20CCFCDC1033B6AC4E10BA13F5A8D50B4" -and $h1 -ne "9062d7198d3791958c74ae96a9bfdf4e80e1df82e40d7973cacd10308d0863dd") {
       throw "Existe outra dinput8.dll, diferente. Por seguranca, nenhum arquivo foi alterado. Verifique a origem e faca backup."
     }
   }
