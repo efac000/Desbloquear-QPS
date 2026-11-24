@@ -529,20 +529,32 @@ bool IsTargetDstClientProcess() {
 
 void LogMsg(const char* fmt, ...) {
     if (g_logPath.empty()) return;
+
+    // Format the common case before taking the file lock.
+    char message[2048];
+    va_list args;
+    va_start(args, fmt);
+    va_list copy;
+    va_copy(copy, args);
+    const int length = std::vsnprintf(message, sizeof(message), fmt, copy);
+    va_end(copy);
+
     AcquireSRWLockExclusive(&g_logLock);
     FILE* f = _wfopen(g_logPath.c_str(), L"a");
     if (f) {
         SYSTEMTIME st{};
         GetLocalTime(&st);
         fprintf(f, "[%02u:%02u:%02u.%03u] ", st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-        va_list ap;
-        va_start(ap, fmt);
-        vfprintf(f, fmt, ap);
-        va_end(ap);
-        fprintf(f, "\n");
+        if (length >= 0 && static_cast<size_t>(length) < sizeof(message)) {
+            fwrite(message, 1, static_cast<size_t>(length), f);
+        } else {
+            vfprintf(f, fmt, args);
+        }
+        fputc('\n', f);
         fclose(f);
     }
     ReleaseSRWLockExclusive(&g_logLock);
+    va_end(args);
 }
 
 // Lock-free System32\dinput8.dll loader: eliminates InitOnceExecuteOnce <-> Loader Lock AB-BA deadlock
