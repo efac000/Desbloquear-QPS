@@ -107,7 +107,6 @@ std::atomic<FARPROC> g_pDllUnregisterServer{nullptr};
 std::atomic<FARPROC> g_pGetdfDIJoystick{nullptr};
 
 SRWLOCK g_logLock = SRWLOCK_INIT;
-HANDLE g_prewarmThread = nullptr;
 std::atomic<LONG> g_stopFlag{0};
 bool g_timerBoosted = false;
 
@@ -345,8 +344,9 @@ struct FrameTimeRing {
         avgFps = (meanUs > 1.0) ? (1000000.0 / meanUs) : 0.0;
 
         float* slice = buf + offset;
-        std::sort(slice, slice + win);
         size_t idx99 = static_cast<size_t>(static_cast<double>(win - 1) * 0.99);
+        std::nth_element(slice, slice + idx99, slice + win);
+        std::sort(slice + idx99 + 1, slice + win);
         p99Ms = static_cast<double>(slice[idx99]) * 0.001;
 
         size_t slowCount = std::max<size_t>(1, (win + 99) / 100);
@@ -4598,7 +4598,9 @@ DWORD WINAPI WorkerProc(LPVOID) {
     }
 
     if (optPrewarm) {
-        g_prewarmThread = CreateThread(nullptr, 0, PrewarmBundlesProc, nullptr, 0, nullptr);
+        if (HANDLE prewarm = CreateThread(nullptr, 0, PrewarmBundlesProc, nullptr, 0, nullptr)) {
+            CloseHandle(prewarm);
+        }
     }
 
     uint64_t lastIniTime = GetFileModTime(g_iniPath);

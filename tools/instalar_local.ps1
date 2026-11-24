@@ -68,7 +68,7 @@ if ($SomenteDLL) {
     Write-Host "Mod local: $modDestino"
     Write-Host "Desative variantes antigas do HyperSmooth/Café Smooth pelo menu do DST."
 }
-if ($dllExistia -and !$mesmaDLL -and $hashAnterior -ne "2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e" -and !$PermitirOutraDLL) {
+if ($dllExistia -and !$mesmaDLL -and $hashAnterior -ne "2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e" -and $hashAnterior -ne "080AD8F4AA5A25A2DF8EDE6B4E9AF1B20CCFCDC1033B6AC4E10BA13F5A8D50B4" -and !$PermitirOutraDLL) {
     Write-Host "Já existe uma DLL diferente no jogo: $hashAnterior" -ForegroundColor Yellow
     Write-Host "Nova DLL: $hashPacote" -ForegroundColor Yellow
     throw "Conflito de DLL. Verifique o arquivo e, somente se autorizado, use -PermitirOutraDLL."

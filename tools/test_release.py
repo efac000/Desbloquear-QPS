@@ -60,7 +60,7 @@ pe=struct.unpack_from("<I",raw,0x3C)[0]
 assert raw[pe:pe+4]==b"PE\x00\x00"
 assert struct.unpack_from("<H",raw,pe+4)[0]==0x8664
 sha=hashlib.sha256(raw).hexdigest()
-assert sha=="2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e",sha
+assert sha=="9062d7198d3791958c74ae96a9bfdf4e80e1df82e40d7973cacd10308d0863dd",sha
 cpp=(ROOT/"native_plugin"/"dinput8.cpp").read_text(encoding="utf-8")
 assert "HookHsEglSwapInterval" in cpp
 assert "LEGACY_CFG_FILENAME" in (ROOT/"modmain.lua").read_text(encoding="utf-8")
