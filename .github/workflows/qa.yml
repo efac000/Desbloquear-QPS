@@ -95,3 +95,4 @@ jobs:
           $rejected = & powershell -NoProfile -ExecutionPolicy Bypass -STA -File $novoWrapper -PastaJogo $jogoAuto 2>&1
           if ($LASTEXITCODE -eq 0 -or [IO.File]::ReadAllText($foreign) -ne 'foreign fixture') { throw 'DLL desconhecida nao foi protegida' }
           Write-Host 'PASS: repeticao com DLL atual e recusa de DLL desconhecida'
+          exit 0
