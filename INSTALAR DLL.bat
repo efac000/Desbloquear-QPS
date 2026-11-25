@@ -12,7 +12,7 @@ powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -STA -File "%~dp0tools
 set "CODIGO=%ERRORLEVEL%"
 echo.
 if "%CODIGO%"=="0" (
- echo Instalacao concluida. Voce ja pode iniciar o DST.
+ echo Operacao concluida com sucesso. Confira o resultado acima.
 ) else (
  echo Instalacao interrompida. Leia a mensagem de erro acima.
 )

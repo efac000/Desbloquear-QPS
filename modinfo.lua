@@ -6,7 +6,7 @@ Para liberar FPS acima de 60, instale a DLL incluída em bin64.
 Mod de cliente, sem exigir o HyperSmooth antigo ou instalação no servidor.
 ]]
 author = "café"
-version = "1.0.2"
+version = "1.0.3"
 
 api_version = 10
 dst_compatible = true

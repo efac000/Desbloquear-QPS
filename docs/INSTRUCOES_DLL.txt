@@ -1,3 +1,5 @@
+ATUALIZACAO 1.0.3: o BAT confirma em verde a instalacao, atualizacao ou DLL ja atualizada. A DLL nativa e a mesma da versao 1.0.2.
+
 ATUALIZACAO 1.0.2: feche o DST, extraia todo o ZIP e execute INSTALAR DLL.bat. O instalador atualiza a DLL antiga e corrige o cache conhecido do proprio QPS na Workshop, com backup. A Steam pode restaurar o script antigo ate a publicacao da versao corrigida na Workshop.
 
 INSTALACAO AUTOMATICA — DESBLOQUEAR QPS

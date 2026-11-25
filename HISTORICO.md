@@ -1,3 +1,9 @@
+# 1.0.3 - Instalador
+
+- Mensagens distintas para instalacao, atualizacao e DLL ja atualizada.
+- Confirmacao de SHA-256 antes do aviso de sucesso, inclusive apos elevacao.
+- DLL nativa sem alteracoes.
+
 # 1.0.2 - Workshop metadata compatibility
 
 - Removed cached ModIndex.LoadModInfo override; preserve native validation after temporary downloads.

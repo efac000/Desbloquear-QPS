@@ -87,3 +87,11 @@ jobs:
               (Get-FileHash -LiteralPath "bin64/dinput8.dll" -Algorithm SHA256).Hash) { throw "DLL automática divergente" }
           if (Test-Path -LiteralPath (Join-Path $jogoAuto "mods/desbloquear-qps")) { throw "Auto-instalação duplicou o mod" }
           Write-Host "PASS: lançador automático e simulação"
+
+          $repeat = & powershell -NoProfile -ExecutionPolicy Bypass -STA -File $novoWrapper -PastaJogo $jogoAuto 2>&1
+          if ($LASTEXITCODE -ne 0 -or ($repeat | Out-String) -notmatch 'JA ESTA ATUALIZADO COM SUCESSO') { throw 'Aviso de DLL atualizada ausente' }
+          $foreign = Join-Path $jogoAuto 'bin64/dinput8.dll'
+          [IO.File]::WriteAllText($foreign,'foreign fixture')
+          $rejected = & powershell -NoProfile -ExecutionPolicy Bypass -STA -File $novoWrapper -PastaJogo $jogoAuto 2>&1
+          if ($LASTEXITCODE -eq 0 -or [IO.File]::ReadAllText($foreign) -ne 'foreign fixture') { throw 'DLL desconhecida nao foi protegida' }
+          Write-Host 'PASS: repeticao com DLL atual e recusa de DLL desconhecida'

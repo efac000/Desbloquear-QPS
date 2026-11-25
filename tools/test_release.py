@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Teste estatico para o pacote Cafe Smooth v1.0.2 (nenhum arquivo modificado)."""
+"""Teste estatico para o pacote Cafe Smooth v1.0.3 (nenhum arquivo modificado)."""
 from pathlib import Path
 import re, hashlib, struct, subprocess, shutil, sys
 from PIL import Image
@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 info=(ROOT/"modinfo.lua").read_text(encoding="utf-8-sig")
 assert 'name = "Desbloquear QPS"' in info
 assert 'author = "café"' in info
-assert 'version = "1.0.2"' in info
+assert 'version = "1.0.3"' in info
 assert 'client_only_mod = true' in info
 s=info.split("configuration_options = {",1)[1]
 names=re.findall(r'(?m)^\s*name = "([a-z_0-9]+)"',s)
@@ -145,10 +145,10 @@ print("PASS: textos da edição PT-BR / sandbox do modinfo / guias de instalaç�
 # Página estática de download (publicação via GitHub Pages em main/docs).
 site=(ROOT/"docs"/"index.html").read_text(encoding="utf-8")
 assert '<html lang="pt-BR">' in site
-assert "Versão atual: v1.0.2" in site
+assert "Versão atual: v1.0.3" in site
 assert "Desbloquear-QPS-DLL-Windows-x64.zip" in site
-assert "releases/download/v1.0.2/dinput8.dll" in site
-assert "releases/download/v1.0.2/dst_fps.ini" in site
+assert "releases/download/v1.0.3/dinput8.dll" in site
+assert "releases/download/v1.0.3/dst_fps.ini" in site
 assert "Instale em 3 passos" in site
 assert "ATENÇÃO: A DLL É NECESSÁRIA" in site
 assert "border:2px solid #f16d72" in site
@@ -189,3 +189,7 @@ assert not any("raw.githubusercontent.com" in a.get("href","") for a in links.li
 assert "releases/latest" not in site.split("<script>")[-1] or "<script>" not in site
 assert "fetch(" not in site, "Dynamic version must not diverge from pinned assets"
 print("PASS: CTA principal e links correspondem exatamente a versao exibida")
+
+assert "ATUALIZADO COM SUCESSO" in wrapper and "JA ESTA ATUALIZADO COM SUCESSO" in wrapper
+assert "function Show-Success" in wrapper and "A DLL final nao passou" in wrapper
+print("PASS: mensagens de instalacao, atualizacao e verificacao final")

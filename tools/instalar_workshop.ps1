@@ -98,12 +98,28 @@ try {
   Write-Host "DST encontrado: $game" -ForegroundColor Green
   $bin=Join-Path $game "bin64"
   $oldDll=Join-Path $bin "dinput8.dll"
+  $h2=(Get-FileHash -LiteralPath (Join-Path $base "bin64\dinput8.dll") -Algorithm SHA256).Hash
+  $h1=$null
   if (Test-Path -LiteralPath $oldDll -PathType Leaf) {
     $h1=(Get-FileHash -LiteralPath $oldDll -Algorithm SHA256).Hash
-    $h2=(Get-FileHash -LiteralPath (Join-Path $base "bin64\dinput8.dll") -Algorithm SHA256).Hash
     if ($h1 -ne $h2 -and $h1 -ne "2fb50ae2a8a16bf96b238b09de02b209cc113aef2760dfb383643950e642765e" -and $h1 -ne "080AD8F4AA5A25A2DF8EDE6B4E9AF1B20CCFCDC1033B6AC4E10BA13F5A8D50B4" -and $h1 -ne "9062d7198d3791958c74ae96a9bfdf4e80e1df82e40d7973cacd10308d0863dd" -and $h1 -ne "64d47e0188734069535b9d0b4de70099ac7caf377ba78b8e3c58d2d3884eb5c8" -and $h1 -ne "c822dfabfac32ce98076a62e532963ca15b8d1e2144033c06330aacd2fac9292") {
       throw "Existe outra dinput8.dll, diferente. Por seguranca, nenhum arquivo foi alterado. Verifique a origem e faca backup."
     }
+  }
+  function Show-Success {
+    if (!(Test-Path -LiteralPath $oldDll -PathType Leaf) -or
+        (Get-FileHash -LiteralPath $oldDll -Algorithm SHA256).Hash -ne $h2) {
+      throw "A DLL final nao passou na verificacao de integridade."
+    }
+    if (!$h1) {
+      Write-Host "INSTALADO COM SUCESSO!" -ForegroundColor Green
+    } elseif ($h1 -ne $h2) {
+      Write-Host "ATUALIZADO COM SUCESSO! DLL anterior substituida." -ForegroundColor Green
+    } else {
+      Write-Host "JA ESTA ATUALIZADO COM SUCESSO! DLL verificada; nenhuma troca necessaria." -ForegroundColor Green
+    }
+    Write-Host "Pacote Desbloquear QPS v1.0.3. Integridade SHA-256 confirmada." -ForegroundColor Green
+    Write-Host "Voce ja pode abrir o DST e usar o mod."
   }
   if ($Simular) {
     & $installer -SomenteDLL -PastaJogo $game
@@ -117,11 +133,12 @@ try {
        "-File",('"'+$PSCommandPath+'"'),"-PastaJogo",('"'+$game+'"'),"-Elevado")
     $child=Start-Process -FilePath $powershell -Verb RunAs -ArgumentList $args -Wait -PassThru
     if ($child.ExitCode -ne 0){throw "Instalacao cancelada ou falhou na janela de administrador."}
+    Show-Success
     exit 0
   }
   if (!(CanWrite $bin)){throw "Nao foi possivel obter permissao de gravacao em bin64."}
   & $installer -SomenteDLL -Aplicar -PastaJogo $game
-  Write-Host "INSTALADO COM SUCESSO! Abra o DST e ative Desbloquear QPS nos Mods de Cliente." -ForegroundColor Green
+  Show-Success
   exit 0
 } catch {
   Write-Host ("ERRO: "+$_.Exception.Message) -ForegroundColor Red

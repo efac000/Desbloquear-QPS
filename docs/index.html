@@ -81,22 +81,22 @@
 <main class="shell">
   <div class="hero">
     <img class="hero-icon" src="./icone-workshop-512.png" alt="Ícone do Desbloquear QPS: chave inglesa e parafuso" width="100" height="100">
-    <div><span id="version" class="eyebrow">Versão atual: v1.0.2</span><p>Correção do cache de metadados que impedia a conexão multiplayer. DLL nativa 1.0.1 preservada.</p><p>Correção de compatibilidade com a Steam Workshop: a DLL mantém a descompactação original do jogo para evitar falhas de leitura dos mods.</p></div>
+    <div><span id="version" class="eyebrow">Versão atual: v1.0.3</span><p>Instalador atualizado: informa se a DLL foi instalada, atualizada ou se j&aacute; estava na vers&atilde;o correta. O bin&aacute;rio nativo permanece o mesmo.</p><p>Correção do cache de metadados que impedia a conexão multiplayer. DLL nativa 1.0.1 preservada.</p><p>Correção de compatibilidade com a Steam Workshop: a DLL mantém a descompactação original do jogo para evitar falhas de leitura dos mods.</p></div>
     <h1>Baixe a DLL do<br>Desbloquear QPS</h1>
     <p class="lead">Já instalou o mod pela Steam Workshop? Baixe somente o complemento para liberar as opções de FPS no <strong>Don't Starve Together</strong>.</p>
     <div class="download">
-      <a class="btn btn-main" href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/Desbloquear-QPS-DLL-Windows-x64.zip" download aria-label="Baixar ZIP com DLL e INI para Windows 64 bits">
+      <a class="btn btn-main" href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.3/Desbloquear-QPS-DLL-Windows-x64.zip" download aria-label="Baixar ZIP com DLL e INI para Windows 64 bits">
         <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 18v3h16v-3"/></svg>
         Baixar instalador da DLL
       </a>
       <p class="size">Windows 64 bits · ZIP pequeno (~225 KiB) · Instalação manual ou com script</p>
     </div>
-    <p class="hint">Pacote oficial v1.0.2: 230.107 bytes. SHA-256: <code style="overflow-wrap:anywhere">a99c3627b6f370d7973d9ffc3ddfe98f011a5bf96527eacd80bba217ef2ac1c9</code>.</p><p class="direct">Prefere separado? <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dinput8.dll">Baixar dinput8.dll</a> <span aria-hidden="true">·</span> <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dst_fps.ini">Baixar dst_fps.ini</a></p>
+    <p class="hint">Pacote oficial v1.0.3: 230.338 bytes. SHA-256: <code style="overflow-wrap:anywhere">6d63561841181495715a99374f4926ab498f5b3a3fd8db1902102ce29ab59361</code>.</p><p class="direct">Prefere separado? <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.3/dinput8.dll">Baixar dinput8.dll</a> <span aria-hidden="true">·</span> <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.3/dst_fps.ini">Baixar dst_fps.ini</a></p>
   </div>
   <div class="notice" role="note" aria-label="Atenção: DLL necessária para desbloquear FPS">
     <div class="notice-title"><span class="notice-symbol" aria-hidden="true">!</span><strong>ATENÇÃO: A DLL É NECESSÁRIA</strong></div>
     <p>A Steam Workshop instala o mod, mas <strong>não instala a DLL</strong> na pasta <code>bin64</code> do jogo. Para desbloquear o FPS, baixe o complemento pelo botão acima e siga as instruções abaixo.</p>
-    <p><strong>J&aacute; possui uma DLL antiga do QPS?</strong> Feche o DST, extraia o novo ZIP e execute o BAT. Ele atualiza as DLLs reconhecidas e corrige o cache antigo conhecido do pr&oacute;prio mod, com backup. N&atilde;o substitui DLLs de terceiros desconhecidas.</p><p>Se a Steam restaurar uma vers&atilde;o antiga do script, execute o instalador novamente at&eacute; a publica&ccedil;&atilde;o do mod corrigido na Workshop. Servidores realmente desatualizados ainda podem recusar a conex&atilde;o.</p><p class="notice-emphasis">Se você já assinou o mod pela Workshop, não precisa instalá-lo duas vezes.</p>
+    <p><strong>J&aacute; possui uma DLL antiga do QPS?</strong> Feche o DST, extraia o novo ZIP e execute o BAT. Ele exibe em verde <strong>ATUALIZADO COM SUCESSO</strong> ao substituir uma DLL antiga reconhecida, ou <strong>JA ESTA ATUALIZADO COM SUCESSO</strong> se a DLL j&aacute; for a correta. Ele atualiza as DLLs reconhecidas e corrige o cache antigo conhecido do pr&oacute;prio mod, com backup. N&atilde;o substitui DLLs de terceiros desconhecidas.</p><p>Se a Steam restaurar uma vers&atilde;o antiga do script, execute o instalador novamente at&eacute; a publica&ccedil;&atilde;o do mod corrigido na Workshop. Servidores realmente desatualizados ainda podem recusar a conex&atilde;o.</p><p class="notice-emphasis">Se você já assinou o mod pela Workshop, não precisa instalá-lo duas vezes.</p>
   </div>
 
   <section id="como-instalar">
@@ -115,7 +115,7 @@
     <h2>Outros downloads</h2>
     <p class="intro">Para quem prefere instalar tudo manualmente ou quer conferir os arquivos técnicos.</p>
     <div class="mini">
-      <div class="card"><h3>Versão completa</h3><p>Mod, DLL, instalador, código-fonte e documentação em um só ZIP.</p><a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/Desbloquear-QPS-v1.0.2-Completo.zip">Baixar pacote completo</a></div>
+      <div class="card"><h3>Versão completa</h3><p>Mod, DLL, instalador, código-fonte e documentação em um só ZIP.</p><a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.3/Desbloquear-QPS-v1.0.3-Completo.zip">Baixar pacote completo</a></div>
       <div class="card"><h3>Código e atualizações</h3><p>Histórico, licenças, novidades e suporte no repositório público.</p><a href="https://github.com/efac000/Desbloquear-QPS">Abrir projeto no GitHub</a></div>
     </div>
   </section>

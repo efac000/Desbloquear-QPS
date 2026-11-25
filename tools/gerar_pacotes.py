@@ -95,8 +95,8 @@ def main()->None:
     assert not any("/native_plugin/" in s or s.endswith(".ps1") for s in workshop)
     OUT.mkdir(parents=True,exist_ok=True)
     names=[
-      ("Desbloquear-QPS-v1.0.2-Completo.zip",full),
-      ("Desbloquear-QPS-v1.0.2-Workshop.zip",workshop),
+      ("Desbloquear-QPS-v1.0.3-Completo.zip",full),
+      ("Desbloquear-QPS-v1.0.3-Workshop.zip",workshop),
       ("Desbloquear-QPS-DLL-Windows-x64.zip",complemento),
     ]
     if not opts.verificar:
