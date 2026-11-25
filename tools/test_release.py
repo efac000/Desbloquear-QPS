@@ -167,3 +167,25 @@ assert "Start-Process -FilePath $powershell -Verb RunAs" in wrapper
 assert "INSTALAR DLL.bat" in (ROOT/"README.md").read_text(encoding="utf-8")
 assert "INSTALAR DLL.bat" in site
 print("PASS: instalador de dois cliques e instruções da Workshop")
+
+# Every site download must match the displayed release, including the primary CTA.
+from html.parser import HTMLParser
+class SiteLinks(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links=[]
+    def handle_starttag(self, tag, attrs):
+        if tag=="a":
+            self.links.append(dict(attrs))
+links=SiteLinks()
+links.feed(site)
+version=re.search(r'v(\d+\.\d+\.\d+)</span>',site).group(1)
+base="https://github.com/efac000/Desbloquear-QPS/releases/download/v"+version+"/"
+primary=[a["href"] for a in links.links if "btn-main" in a.get("class","").split()]
+assert primary==[base+"Desbloquear-QPS-DLL-Windows-x64.zip"],primary
+for name in ["dinput8.dll","dst_fps.ini","Desbloquear-QPS-v"+version+"-Completo.zip"]:
+    assert any(a.get("href")==base+name for a in links.links),name
+assert not any("raw.githubusercontent.com" in a.get("href","") for a in links.links)
+assert "releases/latest" not in site.split("<script>")[-1] or "<script>" not in site
+assert "fetch(" not in site, "Dynamic version must not diverge from pinned assets"
+print("PASS: CTA principal e links correspondem exatamente a versao exibida")

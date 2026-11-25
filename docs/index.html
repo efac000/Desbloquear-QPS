@@ -85,18 +85,18 @@
     <h1>Baixe a DLL do<br>Desbloquear QPS</h1>
     <p class="lead">Já instalou o mod pela Steam Workshop? Baixe somente o complemento para liberar as opções de FPS no <strong>Don't Starve Together</strong>.</p>
     <div class="download">
-      <a class="btn btn-main" href="https://raw.githubusercontent.com/efac000/Desbloquear-QPS/8850452b533c7db01e19b8301992bd4153b591b3/pacotes/Desbloquear-QPS-DLL-Windows-x64.zip" download aria-label="Baixar ZIP com DLL e INI para Windows 64 bits">
+      <a class="btn btn-main" href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/Desbloquear-QPS-DLL-Windows-x64.zip" download aria-label="Baixar ZIP com DLL e INI para Windows 64 bits">
         <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 18v3h16v-3"/></svg>
         Baixar instalador da DLL
       </a>
-      <p class="size">Windows 64 bits · ZIP pequeno (~220 KB) · Instalação manual ou com script</p>
+      <p class="size">Windows 64 bits · ZIP pequeno (~225 KiB) · Instalação manual ou com script</p>
     </div>
-    <p class="direct">Prefere separado? <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dinput8.dll">Baixar dinput8.dll</a> <span aria-hidden="true">·</span> <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dst_fps.ini">Baixar dst_fps.ini</a></p>
+    <p class="hint">Pacote oficial v1.0.2: 230.107 bytes. SHA-256: <code style="overflow-wrap:anywhere">a99c3627b6f370d7973d9ffc3ddfe98f011a5bf96527eacd80bba217ef2ac1c9</code>.</p><p class="direct">Prefere separado? <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dinput8.dll">Baixar dinput8.dll</a> <span aria-hidden="true">·</span> <a href="https://github.com/efac000/Desbloquear-QPS/releases/download/v1.0.2/dst_fps.ini">Baixar dst_fps.ini</a></p>
   </div>
   <div class="notice" role="note" aria-label="Atenção: DLL necessária para desbloquear FPS">
     <div class="notice-title"><span class="notice-symbol" aria-hidden="true">!</span><strong>ATENÇÃO: A DLL É NECESSÁRIA</strong></div>
     <p>A Steam Workshop instala o mod, mas <strong>não instala a DLL</strong> na pasta <code>bin64</code> do jogo. Para desbloquear o FPS, baixe o complemento pelo botão acima e siga as instruções abaixo.</p>
-    <p class="notice-emphasis">Se você já assinou o mod pela Workshop, não precisa instalá-lo duas vezes.</p>
+    <p><strong>J&aacute; possui uma DLL antiga do QPS?</strong> Feche o DST, extraia o novo ZIP e execute o BAT. Ele atualiza as DLLs reconhecidas e corrige o cache antigo conhecido do pr&oacute;prio mod, com backup. N&atilde;o substitui DLLs de terceiros desconhecidas.</p><p>Se a Steam restaurar uma vers&atilde;o antiga do script, execute o instalador novamente at&eacute; a publica&ccedil;&atilde;o do mod corrigido na Workshop. Servidores realmente desatualizados ainda podem recusar a conex&atilde;o.</p><p class="notice-emphasis">Se você já assinou o mod pela Workshop, não precisa instalá-lo duas vezes.</p>
   </div>
 
   <section id="como-instalar">
@@ -137,19 +137,6 @@
     <span><a href="https://github.com/efac000/Desbloquear-QPS/blob/main/LICENSE">Licenças</a> · <a href="https://github.com/efac000/Desbloquear-QPS/releases/latest">Todas as versões</a></span>
   </div>
 </footer>
-<script>
-  // Exibe a tag mais recente quando a API estiver acessível; a página e
-  // os downloads continuam funcionais mesmo sem JavaScript ou rede da API.
-  (function () {
-    var el = document.getElementById('version');
-    fetch('https://api.github.com/repos/efac000/Desbloquear-QPS/releases/latest', {headers:{'Accept':'application/vnd.github+json'}})
-      .then(function (r) { if(!r.ok) throw new Error('Sem dados'); return r.json(); })
-      .then(function (data) {
-        if (typeof data.tag_name === 'string' && /^v?\d+\.\d+\.\d+/.test(data.tag_name)) {
-          el.textContent = 'Versão atual: ' + data.tag_name;
-        }
-      }).catch(function(){ /* mantém a versão estática */ });
-  }());
-</script>
+
 </body>
 </html>
