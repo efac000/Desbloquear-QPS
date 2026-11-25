@@ -1,3 +1,9 @@
+# Atualização 1.0.1 - compatibilidade Workshop
+
+- Desativadas no código nativo as substituições globais de minizip e zlib, inclusive para configurações antigas.
+- Desbloqueio de FPS e demais opções preservados.
+- A verificação de versões e as regras de acesso do DST continuam originais.
+
 # Histórico de evolução — Desbloquear QPS
 
 ## v1.0.0 — revisão pré-lançamento, 22/11/2026

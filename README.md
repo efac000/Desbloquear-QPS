@@ -2,7 +2,9 @@
 
 <img src="icone-workshop-512.png" width="148" alt="Ícone do Desbloquear QPS: chave inglesa apertando um parafuso">
 
-**Versão 1.0.0 • Português brasileiro • Don't Starve Together • Windows 64 bits**
+**Versão 1.0.1 • Português brasileiro • Don't Starve Together • Windows 64 bits**
+
+Atualização 1.0.1: mantém a descompactação ZIP/zlib original do DST mesmo com INI antigo. Corrige uma possível causa local de erros de mods ausentes; não contorna versões realmente incompatíveis.
 
 Edição mantida por **café**. Desbloqueia a seleção de FPS do DST, oferece interpolação visual, ajustes de câmera e menus, opções de desempenho e carregamento. O limite de 144 FPS foi corrigido na DLL desta edição por meio do controle de apresentação EGL.
 
@@ -46,8 +48,8 @@ Prefere os arquivos separados? [Baixar dinput8.dll](https://github.com/efac000/D
 ## Outros downloads
 
 - **[Versão completa com DLL e instalador](https://github.com/efac000/Desbloquear-QPS/releases/latest)** — indicada para todos os jogadores do Windows 64 bits.
-- [Pacote completo armazenado no repositório](pacotes/Desbloquear-QPS-v1.0.0-Completo.zip).
-- [Pacote exclusivo para Steam Workshop](pacotes/Desbloquear-QPS-v1.0.0-Workshop.zip).
+- [Pacote completo armazenado no repositório](pacotes/Desbloquear-QPS-v1.0.1-Completo.zip).
+- [Pacote exclusivo para Steam Workshop](pacotes/Desbloquear-QPS-v1.0.1-Workshop.zip).
 - [Ícone da Workshop, 512 × 512](icone-workshop-512.png).
 
 O pacote completo contém os arquivos do mod, a DLL `dinput8.dll`, o arquivo `dst_fps.ini`, o instalador opcional e a documentação.
@@ -115,7 +117,7 @@ Se o jogo está em outra unidade, acrescente `-PastaJogo "D:\SteamLibrary\steama
 
 ## Para quem vai publicar na Workshop
 
-Use somente o [pacote da Workshop](pacotes/Desbloquear-QPS-v1.0.0-Workshop.zip) e a imagem `icone-workshop-512.png`. **Não publique o código C++, os pacotes ZIP, os arquivos de compilação nem a DLL dentro do item Workshop.** Inclua na descrição o link para instalar a DLL a partir deste repositório. Veja [o roteiro de publicação e texto pronto](docs/PUBLICACAO_WORKSHOP.md).
+Use somente o [pacote da Workshop](pacotes/Desbloquear-QPS-v1.0.1-Workshop.zip) e a imagem `icone-workshop-512.png`. **Não publique o código C++, os pacotes ZIP, os arquivos de compilação nem a DLL dentro do item Workshop.** Inclua na descrição o link para instalar a DLL a partir deste repositório. Veja [o roteiro de publicação e texto pronto](docs/PUBLICACAO_WORKSHOP.md).
 
 ## Compatibilidade, autoria e licenças
 

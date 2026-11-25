@@ -14,7 +14,7 @@ O mod possui **duas partes distintas**: os scripts do cliente (obtidos pela Work
 
 ## Primeiro: baixe os arquivos
 
-Acesse [GitHub Releases](https://github.com/efac000/Desbloquear-QPS/releases/latest) e baixe **Desbloquear-QPS-v1.0.0-Completo.zip**. Extraia o arquivo ZIP; a pasta extraída se chama `Desbloquear QPS`.
+Acesse [GitHub Releases](https://github.com/efac000/Desbloquear-QPS/releases/latest) e baixe **Desbloquear-QPS-v1.0.1-Completo.zip**. Extraia o arquivo ZIP; a pasta extraída se chama `Desbloquear QPS`.
 
 A pasta contém, entre outros:
 

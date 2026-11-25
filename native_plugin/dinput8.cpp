@@ -4325,8 +4325,8 @@ void EnsureDefaultIni() {
         "hybrid_frame_pacer=1\n"
         "fast_mimalloc_lua=1\n"
         "fast_vector_fill=1\n"
-        "fast_libdeflate_zip=1\n"
-        "fast_zlib_inflate=1\n"
+        "fast_libdeflate_zip=0\n"
+        "fast_zlib_inflate=0\n"
         "smooth_skeletal_anim=1\n"
         "world_pos_interp=1\n"
         "raknet_zero_stall=1\n"
@@ -4474,7 +4474,7 @@ DWORD WINAPI WorkerProc(LPVOID) {
     if (FILE* f = _wfopen(g_logPath.c_str(), L"w")) fclose(f);
     ReleaseSRWLockExclusive(&g_logLock);
 
-    LogMsg("DST HyperSmooth & FastLoad Native Companion Plugin v2.5.0 (RTSS Pacer + mimalloc + Boss Anti-Hitch + Player-First Eye-Care Visual Fidelity) loaded.");
+    LogMsg("Desbloquear QPS v1.0.1 (RTSS Pacer + mimalloc + Boss Anti-Hitch + Player-First Eye-Care Visual Fidelity) loaded.");
 
     // Initialize QPC frequency scale BEFORE installing any timing/pacer/GC/anim hooks
     {
@@ -4494,8 +4494,8 @@ DWORD WINAPI WorkerProc(LPVOID) {
     bool optRtssPacer = ReadIniInt(L"OPTIMIZE", L"rtss_frame_pacer", optHybridPacer ? 1 : 0) != 0;
     bool optMimallocLua = ReadIniInt(L"OPTIMIZE", L"fast_mimalloc_lua", 1) != 0;
     bool optFastVec = ReadIniInt(L"OPTIMIZE", L"fast_vector_fill", 1) != 0;
-    bool optLibdeflate = ReadIniInt(L"OPTIMIZE", L"fast_libdeflate_zip", 1) != 0;
-    bool optFastZlib = ReadIniInt(L"OPTIMIZE", L"fast_zlib_inflate", 1) != 0;
+    // QPS 1.0.1: keep original ZIP extraction even with legacy INI overrides.
+    LogMsg("[Workshop compatibility] Native ZIP and zlib extraction preserved; legacy acceleration flags ignored.");
     bool optSkeletal = ReadIniInt(L"OPTIMIZE", L"smooth_skeletal_anim", 1) != 0;
     bool optWorldPos = ReadIniInt(L"OPTIMIZE", L"world_pos_interp", 1) != 0;
     bool optRakZeroStall = ReadIniInt(L"OPTIMIZE", L"raknet_zero_stall", 1) != 0;
@@ -4551,8 +4551,8 @@ DWORD WINAPI WorkerProc(LPVOID) {
         PrepareRenderPerfHooks(patches, textStart, textSize);
         if (optMimallocLua) PrepareClientMimallocHook(patches, textStart, textSize);
         if (optFastVec) PrepareVectorMemsetPatch(patches, textStart, textSize);
-        if (optLibdeflate) PrepareLibdeflateUnzHook(patches, textStart, textSize);
-        if (optFastZlib) PrepareFastInflatePatch(patches, textStart, textSize);
+        // Workshop legacy ZIP extraction must use the original game code.
+        // Do not install the global inflate_fast replacement.
         if (optSmoothGc) PrepareSmoothLuaGcHook(patches, textStart, textSize);
         if (optRakZeroStall) PrepareRakNetZeroStallPatch(patches, textStart, textSize);
         if (optFastSpatial) PrepareClientSpatialZeroCopyHooks(patches, textStart, textSize);

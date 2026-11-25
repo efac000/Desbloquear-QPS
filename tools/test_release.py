@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Teste estatico para o pacote Cafe Smooth v1.0.0 (nenhum arquivo modificado)."""
+"""Teste estatico para o pacote Cafe Smooth v1.0.1 (nenhum arquivo modificado)."""
 from pathlib import Path
 import re, hashlib, struct, subprocess, shutil, sys
 from PIL import Image
@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 info=(ROOT/"modinfo.lua").read_text(encoding="utf-8-sig")
 assert 'name = "Desbloquear QPS"' in info
 assert 'author = "café"' in info
-assert 'version = "1.0.0"' in info
+assert 'version = "1.0.1"' in info
 assert 'client_only_mod = true' in info
 s=info.split("configuration_options = {",1)[1]
 names=re.findall(r'(?m)^\s*name = "([a-z_0-9]+)"',s)
@@ -60,15 +60,19 @@ pe=struct.unpack_from("<I",raw,0x3C)[0]
 assert raw[pe:pe+4]==b"PE\x00\x00"
 assert struct.unpack_from("<H",raw,pe+4)[0]==0x8664
 sha=hashlib.sha256(raw).hexdigest()
-assert sha=="c822dfabfac32ce98076a62e532963ca15b8d1e2144033c06330aacd2fac9292",sha
+assert sha=="ac60fd192f0fc8632b9c06c1ff7d8bf1afadf00151695ce0920ee77a99f949d5",sha
 cpp=(ROOT/"native_plugin"/"dinput8.cpp").read_text(encoding="utf-8")
 assert "HookHsEglSwapInterval" in cpp
+assert "PrepareLibdeflateUnzHook(patches, textStart, textSize)" not in cpp
+assert "PrepareFastInflatePatch(patches, textStart, textSize)" not in cpp
+assert "legacy acceleration flags ignored" in cpp
 assert "LEGACY_CFG_FILENAME" in (ROOT/"modmain.lua").read_text(encoding="utf-8")
 assert "desbloquear_qps_cfg_v1" in (ROOT/"modmain.lua").read_text(encoding="utf-8")
 assert "HookHsEglSwapBuffers" in cpp
 assert "force_unsynced_presentation" in cpp
 ini=(ROOT/"bin64"/"dst_fps.ini").read_text(encoding="utf-8")
 assert "force_unsynced_presentation=1" in ini
+assert "fast_libdeflate_zip=0" in ini and "fast_zlib_inflate=0" in ini
 assert "low_latency_gpu_sync=0" in ini
 for f in ["LICENSE","licenses/libdeflate-COPYING","licenses/mimalloc-LICENSE"]:
     assert (ROOT/f).stat().st_size>200
@@ -139,10 +143,10 @@ print("PASS: textos da edição PT-BR / sandbox do modinfo / guias de instalaç�
 # Página estática de download (publicação via GitHub Pages em main/docs).
 site=(ROOT/"docs"/"index.html").read_text(encoding="utf-8")
 assert '<html lang="pt-BR">' in site
-assert "Versão atual: v1.0.0" in site
+assert "Versão atual: v1.0.1" in site
 assert "Desbloquear-QPS-DLL-Windows-x64.zip" in site
-assert "releases/latest/download/dinput8.dll" in site
-assert "releases/latest/download/dst_fps.ini" in site
+assert "releases/download/v1.0.1/dinput8.dll" in site
+assert "releases/download/v1.0.1/dst_fps.ini" in site
 assert "Instale em 3 passos" in site
 assert "ATENÇÃO: A DLL É NECESSÁRIA" in site
 assert "border:2px solid #f16d72" in site
