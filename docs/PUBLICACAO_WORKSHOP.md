@@ -1,10 +1,10 @@
-# Publicação na Steam Workshop — Desbloquear QPS v1.0.1
+# Publicação na Steam Workshop — Desbloquear QPS v1.0.2
 
 Esta documentação é para o proprietário do mod. **A preparação no GitHub não publica nada automaticamente na Steam.** Confirme a conta e o item da Workshop antes de qualquer upload.
 
 ## Arquivos a publicar
 
-Baixe e extraia `pacotes/Desbloquear-QPS-v1.0.1-Workshop.zip`. Escolha **a pasta interna Desbloquear QPS** ao utilizar o publicador da Workshop. Ela contém:
+Baixe e extraia `pacotes/Desbloquear-QPS-v1.0.2-Workshop.zip`. Escolha **a pasta interna Desbloquear QPS** ao utilizar o publicador da Workshop. Ela contém:
 
 ```text
 modinfo.lua

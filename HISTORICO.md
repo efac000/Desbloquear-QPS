@@ -1,3 +1,9 @@
+# 1.0.2 - Workshop metadata compatibility
+
+- Removed cached ModIndex.LoadModInfo override; preserve native validation after temporary downloads.
+- Preserved custom FPS options (30-1000), native DLL 1.0.1 and existing user settings.
+- Installer removes the known obsolete cache hook from the installed QPS Workshop item, with backup.
+
 # Atualização 1.0.1 - compatibilidade Workshop
 
 - Desativadas no código nativo as substituições globais de minizip e zlib, inclusive para configurações antigas.

@@ -6,7 +6,7 @@ Para liberar FPS acima de 60, instale a DLL incluída em bin64.
 Mod de cliente, sem exigir o HyperSmooth antigo ou instalação no servidor.
 ]]
 author = "café"
-version = "1.0.1"
+version = "1.0.2"
 
 api_version = 10
 dst_compatible = true
@@ -81,11 +81,26 @@ for i = 1, #numpad_keys do
     keys[#keys + 1] = { description = "Teclado numérico " .. (numpad_labels_ptbr[k] or k), data = "KEY_KP_" .. k:upper() }
 end
 
+local custom_fps_options = { { description = "Desativado", data = 0 } }
+for fps = 30, 1000 do
+    custom_fps_options[#custom_fps_options + 1] = { description = fps .. " FPS", data = fps }
+end
+
 configuration_options = {
+    {
+        name = "target_fps_mode",
+        label = "Modo do limite",
+        hover = "Escolha qual das duas opções abaixo controla o limite.",
+        options = {
+            { description = "Predefinido", data = "preset" },
+            { description = "Personalizado", data = "custom" },
+        },
+        default = "preset",
+    },
     {
         name = "target_fps",
         label = "Limite de FPS",
-        hover = "Requer dinput8.dll para passar de 60 FPS. Altere também em Vídeo.",
+        hover = "Usado no modo Predefinido. Requer dinput8.dll para passar de 60 FPS.",
         options = {
             { description = "60 FPS", data = 60 },
             { description = "120 FPS", data = 120 },
@@ -96,6 +111,14 @@ configuration_options = {
             { description = "Sem limite", data = 0 },
         },
         default = 240,
+    },
+    {
+        name = "target_fps_custom",
+        label = "Personalizar",
+        hover = "Usado no modo Personalizado. Arraste ou digite de 30 a 1000 FPS. O valor inicial é 240 FPS.",
+        options = custom_fps_options,
+        slider_data = { 30, 1000, 2, qps_integer_display = true },
+        default = 0,
     },
     {
         name = "visual_preset",
@@ -223,16 +246,6 @@ configuration_options = {
         name = "keep_shard_assets",
         label = "Carregar cavernas",
         hover = "Reaproveita recursos já carregados. Requer 8 GB de RAM.",
-        options = {
-            { description = "Ativado", data = true },
-            { description = "Desativado", data = false },
-        },
-        default = true,
-    },
-    {
-        name = "fast_mod_scan",
-        label = "Cache de mods",
-        hover = "Evita reler informações de mods desativados a cada tela.",
         options = {
             { description = "Ativado", data = true },
             { description = "Desativado", data = false },

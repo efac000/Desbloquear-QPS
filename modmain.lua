@@ -27,8 +27,6 @@ if type(Asset) == "function" then
     }
 end
 
-local TARGET_FPS = GetModConfigData("target_fps")
-if type(TARGET_FPS) ~= "number" then TARGET_FPS = 240 end
 local VISUAL_PRESET = GetModConfigData("visual_preset")
 if type(VISUAL_PRESET) ~= "number" then VISUAL_PRESET = 0 end
 if VISUAL_PRESET < 0 or VISUAL_PRESET > 3 then VISUAL_PRESET = 0 end
@@ -62,8 +60,6 @@ local REDUCE_240HZ_CHURN = GetModConfigData("reduce_240hz_churn")
 if REDUCE_240HZ_CHURN == nil then REDUCE_240HZ_CHURN = true end
 local KEEP_SHARD_ASSETS = GetModConfigData("keep_shard_assets")
 if KEEP_SHARD_ASSETS == nil then KEEP_SHARD_ASSETS = true end
-local FAST_MOD_SCAN = GetModConfigData("fast_mod_scan")
-if FAST_MOD_SCAN == nil then FAST_MOD_SCAN = true end
 local SKIP_TOP_MODS_QUERY = GetModConfigData("skip_top_mods_query")
 if SKIP_TOP_MODS_QUERY == nil then SKIP_TOP_MODS_QUERY = true end
 local SKIP_MOTD_DELAY = GetModConfigData("skip_motd_delay")
@@ -77,16 +73,148 @@ if AUTO_60HZ_SIM == nil then AUTO_60HZ_SIM = true end
 
 local CFG_FILENAME = "desbloquear_qps_cfg_v1"
 local LEGACY_CFG_FILENAME = "dst_smooth_highfps_cfg"
-local FPS_PRESETS = { 60, 120, 144, 165, 240, 360, 0 }
--- Validate options read from old persist files before touching the native limiter.
-local function IsSupportedTargetFps(value)
-    if type(value) ~= "number" then return false end
-    for i = 1, #FPS_PRESETS do
-        if FPS_PRESETS[i] == value then return true end
+local FPS_PRESETS = {60, 120, 144, 165, 240, 360, 0}
+local function NextFpsPreset(value)
+    for _, preset in ipairs(FPS_PRESETS) do
+        if preset == 0 or preset > value then return preset end
     end
-    return false
 end
-if not IsSupportedTargetFps(TARGET_FPS) then TARGET_FPS = 240 end
+
+local MIN_CUSTOM_FPS, MAX_CUSTOM_FPS = 30, 1000
+local function IsSupportedTargetFps(value)
+    return type(value) == "number" and (value == 0
+        or (value >= MIN_CUSTOM_FPS and value <= MAX_CUSTOM_FPS and value % 1 == 0))
+end
+
+local function OpenCustomFps(current, accept)
+    local Screen = GLOBAL.require("widgets/screen")
+    local Image = GLOBAL.require("widgets/image")
+    local ImageButton = GLOBAL.require("widgets/imagebutton")
+    local frontend = GLOBAL.TheFrontEnd
+    local popup = Screen("QPSTargetFps")
+    popup:AddChild(TEMPLATES.BackgroundTint())
+    local root = popup:AddChild(TEMPLATES.ScreenRoot())
+    local value = IsSupportedTargetFps(current) and current > 0 and current or 240
+    local dialog = root:AddChild(TEMPLATES.CurlyWindow(560, 210, "Limite personalizado de FPS", {
+        {text = "Usar valor", cb = function()
+            frontend:PopScreen(popup)
+            accept(value)
+        end},
+        {text = "Cancelar", controller_control = GLOBAL.CONTROL_CANCEL,
+            cb = function() frontend:PopScreen(popup) end},
+    }, nil, "Arraste para escolher de 30 a 1000 FPS"))
+    local readout = dialog:AddChild(Text(GLOBAL.CHATFONT, 28))
+    readout:SetPosition(0, -12)
+    local track = dialog:AddChild(Image("images/global.xml", "square.tex"))
+    track:SetSize(420, 4)
+    track:SetPosition(0, 30)
+    track:SetTint(.38, .32, .23, 1)
+    local knob = dialog:AddChild(Image("images/global_redux.xml", "scrollbar_handle.tex"))
+    knob:SetScale(.3, .3, 1)
+    local hit = dialog:AddChild(ImageButton("images/global.xml", "square.tex"))
+    hit:SetPosition(0, 30)
+    hit:ForceImageSize(436, 36)
+    hit.image:SetTint(1, 1, 1, 0)
+    hit.scale_on_focus = false
+    hit.move_on_click = false
+    local function update()
+        local fraction = (value - MIN_CUSTOM_FPS) / (MAX_CUSTOM_FPS - MIN_CUSTOM_FPS)
+        knob:SetPosition(420 * (fraction - .5), 30)
+        readout:SetString(tostring(value) .. " FPS")
+    end
+    local function drag()
+        knob:SetPosition(-210, 30)
+        local left = knob:GetWorldPosition().x
+        knob:SetPosition(210, 30)
+        local right = knob:GetWorldPosition().x
+        if right <= left or type(frontend.lastx) ~= "number" then update(); return end
+        local fraction = math.max(0, math.min(1, (frontend.lastx - left) / (right - left)))
+        value = math.floor(MIN_CUSTOM_FPS + fraction * (MAX_CUSTOM_FPS - MIN_CUSTOM_FPS) + .5)
+        update()
+    end
+    hit:SetOnDown(drag)
+    hit:SetWhileDown(drag)
+    update()
+    frontend:PushScreen(popup)
+end
+local function NormalizeCustomFps(value)
+    if type(value) == "number" and value >= MIN_CUSTOM_FPS and value <= MAX_CUSTOM_FPS then
+        return math.floor(value + .5)
+    end
+    return 0
+end
+
+-- Configs Extend computes drag positions in floating point even with a discrete step.
+local function FixCustomFpsDisplay(screen, _, _, _, slider_data)
+    if not slider_data or not slider_data.qps_integer_display or not screen.value_display then
+        return
+    end
+
+    local display = screen.value_display
+    local set_string = display.SetString
+    display.SetString = function(widget, value)
+        local numeric = tonumber(value)
+        if numeric then
+            value = tostring(NormalizeCustomFps(numeric))
+        end
+        return set_string(widget, value)
+    end
+    display:SetCharacterFilter("0123456789")
+    display:SetString(display:GetString())
+    display.last_safe_string = display:GetString()
+
+    local get_value = screen.GetCurrentValue
+    screen.GetCurrentValue = function(widget)
+        return NormalizeCustomFps(get_value(widget))
+    end
+end
+
+local remi_slider_path = "widgets/remi_sliderscreen"
+if pcall(GLOBAL.require, remi_slider_path) then
+    AddClassPostConstruct(remi_slider_path, FixCustomFpsDisplay)
+end
+
+local function ResolveConfiguredFps(mode, preset, custom)
+    if mode == "custom" then
+        local fps = NormalizeCustomFps(custom)
+        return fps > 0 and fps or 240
+    end
+    return IsSupportedTargetFps(preset) and preset or 240
+end
+
+local TARGET_FPS = ResolveConfiguredFps(
+    GetModConfigData("target_fps_mode"),
+    GetModConfigData("target_fps"),
+    GetModConfigData("target_fps_custom")
+)
+
+AddClassPostConstruct("screens/redux/modconfigurationscreen", function(screen)
+    if screen.modname ~= modname then return end
+    local grid = screen.options_scroll_list
+    local apply = grid.update_fn
+    grid.update_fn = function(context, row, data, index)
+        apply(context, row, data, index)
+        local active = data and data.option.name == "target_fps_custom"
+        if active and not row.qps_custom_button then
+            row.qps_custom_button = row.opt:AddChild(TEMPLATES.StandardButton(function()
+                local current = row.opt.data
+                if not current or current.option.name ~= "target_fps_custom" then return end
+                OpenCustomFps(NormalizeCustomFps(current.selected_value), function(value)
+                    current.selected_value = value
+                    current.option.value = value
+                    screen:MakeDirty()
+                    grid:RefreshView()
+                end)
+            end, "Ajustar", {76, 28}))
+            row.qps_custom_button:SetPosition(-160, 0)
+        end
+        if row.qps_custom_button then
+            if active then row.qps_custom_button:Show() else row.qps_custom_button:Hide() end
+        end
+    end
+    grid:RefreshView()
+end)
+
 -- Persistent HUD strings: no table allocation on each telemetry refresh.
 local VISUAL_HUD_MODE_TAGS = { [0] = "Original", [1] = "HD",
     [2] = "Ilustração suave", [3] = "Personalizado" }
@@ -277,23 +405,18 @@ local function SyncToNativePlugin(save_persist)
     end
 end
 
--- Restore last in-game OptionsScreen choices unless user explicitly changed modinfo.lua config
+-- Restore visual choices. FPS starts from the selected mod configuration mode.
 if TheSim and TheSim.GetPersistentString then
     local function RestoreSavedSettings(load_success, str)
         if load_success and type(str) == "string" and #str > 0 then
-            local sf = tonumber(str:match("fps=(%d+)"))
             local ss = tonumber(str:match("skeletal=(%d+)"))
             local sh = tonumber(str:match("hud=(%d+)"))
             local svp = tonumber(str:match("vp=(%d+)"))
             local svm = tonumber(str:match("vm=(%d+)"))
-            local mf = tonumber(str:match("mf=(%d+)"))
             local ms = tonumber(str:match("ms=(%d+)"))
             local mh = tonumber(str:match("mh=(%d+)"))
             local mvp = tonumber(str:match("mvp=(%d+)"))
             local mvm = tonumber(str:match("mvm=(%d+)"))
-            if IsSupportedTargetFps(sf) and mf == TARGET_FPS then
-                current_target_fps = sf
-            end
             if ss ~= nil and ms == (SKELETAL_TWEEN and 1 or 0) then
                 current_skeletal_tween = (ss ~= 0)
             end
@@ -559,28 +682,7 @@ end)
 --    v2.2.1: preserves savedata.known_mods[modname].modinfo write-back and
 --    bypasses cache on ServerCreationScreen / game_modes mods (100% DSA safe).
 --------------------------------------------------------------------------------
-if FAST_MOD_SCAN and KnownModIndex and KnownModIndex.LoadModInfo then
-    local old_LoadModInfo = KnownModIndex.LoadModInfo
-    KnownModIndex.LoadModInfo = function(self, modname, prev_info)
-        if prev_info ~= nil and modname ~= nil and prev_info.version ~= nil and prev_info.game_modes == nil then
-            local fe = GLOBAL.TheFrontEnd
-            local scr = fe and fe:GetActiveScreen()
-            local in_server_creation = scr ~= nil and scr.name == "ServerCreationScreen"
-            if not in_server_creation and modname ~= "workshop-2657513551" then
-                local enabled = (self.IsModEnabledAny and self:IsModEnabledAny(modname))
-                    or (self.IsModTempEnabled and self:IsModTempEnabled(modname))
-                    or (self.IsModForceEnabled and self:IsModForceEnabled(modname))
-                if not enabled then
-                    if self.savedata and self.savedata.known_mods and self.savedata.known_mods[modname] then
-                        self.savedata.known_mods[modname].modinfo = prev_info
-                    end
-                    return prev_info
-                end
-            end
-        end
-        return old_LoadModInfo(self, modname, prev_info)
-    end
-end
+-- QPS Workshop compatibility: use the original ModIndex.LoadModInfo.
 
 --------------------------------------------------------------------------------
 -- 2. Skip Top Popular Mods Steam Query ("Getting top mod details...", 3-13s)
@@ -1136,11 +1238,11 @@ AddClassPostConstruct("screens/redux/optionsscreen", function(self)
     if self.refreshRateSpinner.parent then
         if is_zh then
             self.refreshRateSpinner.parent.tooltip_text = has_dll
-                and "Controlado pelo Desbloquear QPS: de 60 a 360 FPS ou ilimitado, em janela ou tela cheia, com estabilização do 1% Low."
+                and "Controlado pelo Desbloquear QPS: até 1000 FPS ou ilimitado, em janela ou tela cheia, com estabilização do 1% Low."
                 or "Instale bin64/dinput8.dll para superar 60 FPS e ativar a estabilização de quadros (sem a DLL, controla apenas o modo de exibição)."
         else
             self.refreshRateSpinner.parent.tooltip_text = has_dll
-                and "Controlado pelo Desbloquear QPS: de 60 a 360 FPS ou ilimitado, em janela ou tela cheia, com estabilização do 1% Low."
+                and "Controlado pelo Desbloquear QPS: até 1000 FPS ou ilimitado, em janela ou tela cheia, com estabilização do 1% Low."
                 or "Instale bin64/dinput8.dll para superar 60 FPS e ativar a estabilização de quadros (sem a DLL, controla apenas o modo de exibição)."
         end
     end
@@ -1782,14 +1884,7 @@ end)
 -- Live Any-Key & Mouse-Button Rebind Engine (wired by keybind.lua in Mod Config & ESC->Settings->Controls)
 local HOTKEY_ACTIONS = {
     hotkey_cycle = function()
-        local next_idx = 1
-        for i, v in ipairs(FPS_PRESETS) do
-            if v == current_target_fps then
-                next_idx = (i % #FPS_PRESETS) + 1
-                break
-            end
-        end
-        current_target_fps = FPS_PRESETS[next_idx]
+        current_target_fps = NextFpsPreset(current_target_fps)
         SyncToNativePlugin(true)
         if HasNativePlugin() then
             toast_msg = "FPS alvo: " .. FormatTargetLabel(current_target_fps)

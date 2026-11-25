@@ -63,7 +63,7 @@ Write-Host "DLL: $dllDestino"
 Write-Host ("DLL existente coincide com a do pacote: " + $mesmaDLL)
 Write-Host ("Configuração nativa existente será preservada: " + $iniExistia)
 if ($SomenteDLL) {
-    Write-Host "A pasta de mods não será alterada; use apenas a edição da Workshop."
+    Write-Host "Nao duplica o mod. Pode corrigir o cache obsoleto apenas do proprio QPS na Workshop, com backup."
 } else {
     Write-Host "Mod local: $modDestino"
     Write-Host "Desative variantes antigas do HyperSmooth/Café Smooth pelo menu do DST."
@@ -98,6 +98,32 @@ $modAlterado = $false
 $dllAlterada = $false
 $iniAlterado = $false
 
+# Repair only the known cache hook of our own Workshop item.
+$wsBase = Join-Path (Split-Path (Split-Path $PastaJogo -Parent) -Parent) "workshop\content\322330\3844329122"
+$wsScript = Join-Path $wsBase "modmain.lua"
+$wsBackup = Join-Path $backupRoot "workshop-qps-modmain-original.lua"
+$wsAlterado = $false
+function Repair-QpsWorkshopCache {
+    if (!(Test-Path -LiteralPath $wsScript -PathType Leaf)) { return }
+    $utf8 = New-Object System.Text.UTF8Encoding($false, $true)
+    $original = [IO.File]::ReadAllText($wsScript,$utf8)
+    $pattern = '(?ms)^if FAST_MOD_SCAN and KnownModIndex and KnownModIndex\.LoadModInfo then\r?\n.*?^end\r?\n'
+    $matches = [regex]::Matches($original,$pattern)
+    if ($matches.Count -eq 0) { return }
+    if ($matches.Count -ne 1) { throw "QPS Workshop: unexpected cache hook; update via Steam." }
+    $m = $matches[0]
+    $normalized = $m.Value.Replace([string][char]13,"")
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try { $hash = [BitConverter]::ToString($hasher.ComputeHash($utf8.GetBytes($normalized))).Replace("-","").ToLowerInvariant() }
+    finally { $hasher.Dispose() }
+    if ($hash -notin @("520d49cd2f7d212f5b9a8d03cbf66dc33ca098bfc48fd216aa4ebd0d845c73c6","520d49cd2f7d212f5b9a8d03cbf66dc33ca098bfc48fd216aa4ebd0d845c73c6")) { throw "QPS Workshop: unknown cache hook; update via Steam." }
+    Copy-Item -LiteralPath $wsScript -Destination $wsBackup -ErrorAction Stop
+    $script:wsAlterado = $true
+    $updated = $original.Substring(0,$m.Index) + "-- QPS Workshop compatibility: use the original ModIndex.LoadModInfo." + [char]10 + $original.Substring($m.Index+$m.Length)
+    [IO.File]::WriteAllText($wsScript,$updated,$utf8)
+    Write-Host "QPS Workshop: obsolete metadata cache disabled; backup saved."
+}
+
 try {
     if (!$SomenteDLL) {
         $modAlterado = $true
@@ -112,6 +138,7 @@ try {
             Copy-Item -LiteralPath (Join-Path $raiz $nome) -Destination (Join-Path $modDestino $nome) -Recurse -ErrorAction Stop
         }
     }
+    if ($SomenteDLL) { Repair-QpsWorkshopCache }
     if (!$mesmaDLL) {
         $dllAlterada = $true
         Copy-Item -LiteralPath $dllOrigem -Destination $dllDestino -Force -ErrorAction Stop
@@ -154,6 +181,7 @@ catch {
     $falha = $_
     Write-Warning ("Instalação interrompida: " + $falha.Exception.Message)
     Write-Warning "Tentando restaurar o estado anterior..."
+    if ($wsAlterado) { Copy-Item -LiteralPath $wsBackup -Destination $wsScript -Force -ErrorAction Stop }
     if ($modAlterado) {
         if (Test-Path -LiteralPath $modDestino) { Remove-Item -LiteralPath $modDestino -Recurse -Force -ErrorAction SilentlyContinue }
         if ($modExistia -and (Test-Path -LiteralPath $backupMod)) {
