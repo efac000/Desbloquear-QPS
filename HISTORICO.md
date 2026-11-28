@@ -1,3 +1,16 @@
+# 1.0.4 - candidata (não publicada)
+
+- Reutilização experimental de marcadores visuais de terreno do Geometric Placement 3.2.0, com limite e expiração.
+- Desativada por padrão; sem mudanças na DLL, no terreno real ou no instalador.
+- Homologação gráfica e multiplayer pendentes. Ver docs/QA_TERRENO_104.md.
+
+## Evolução da candidata 1.0.4 (27/11/2026)
+
+- r1 (01d9e51): pool de marcadores; travadas persistiram no teste real.
+- r2 (d1bedf7): marcadores leves, pré-aquecimento, refresh limitado e telemetria; pré-aquecimento confirmado, mas fallback de integração no cliente.
+- r3 (87d523c): preserva wrappers conhecidos do Snapping Tills e ActionQueue RB3 e instala no SetBuilder do cursor. Testes simulados, lint e integridade aprovados; execução efetiva e melhora em jogo ainda não homologadas.
+- Lições, erros, evidências, decisões e protocolo de aceitação em [base de conhecimento](docs/CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md). A versão pública continua 1.0.3, DLL e BAT preservados.
+
 # 1.0.3 - Instalador
 
 - Mensagens distintas para instalacao, atualizacao e DLL ja atualizada.
@@ -67,3 +80,18 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 - Localização automática testada no Windows, corrigindo duplicação do mesmo caminho com diferenças entre maiúsculas e minúsculas.
 - Instalador nativo preserva backups e configuração existente e impede conflito com outra DLL diferente.
 - Página e documentação atualizadas, sem modificar Lua ou DLL.
+
+## Revisão 4 da candidata 1.0.4
+
+- Log real r3 confirmou novo fallback de OnUpdate desconhecido. Teste de regressão reproduziu a rejeição (RED exit 1); r4 passou ao deixar OnUpdate intacto e atuar nos métodos GP verificados (GREEN).
+- Telemetria distingue hook instalado e execução dos métodos de grade. Sem homologação de desempenho em jogo. Ver docs/QA_TERRENO_104_R4.md.
+
+## Candidata 1.0.4 r5 — posicionador original
+
+- Relato de travadas sem mods cliente levou à inspeção dos scripts vanilla. Encontradas 50 criações auxiliares síncronas no SetBuilder do gridplacer no tuning padrão; nova opção independente e desativada por padrão evita as criações no caminho original compatível.
+- Testes com o código vanilla instalado e APIs nativas simuladas: 50 para 0 criações, validações e mouse/controle preservados. Ainda não há prova de ganho real. Ver [QA r5](docs/QA_TERRENO_104_R5_VANILLA.md).
+
+## Candidata 1.0.4 r6 — diagnóstico nativo
+
+- Execução do pool confirmada em jogo (53 ciclos); travadas persistem, r5 vanilla em fallback. Reduzido spam de telemetria e criada ferramenta QA reversível para isolar DLL/consultas espaciais.
+- Nenhum perfil real aplicado; sem correção de FPS comprovada. Ver [QA r6](docs/QA_TERRENO_104_R6_NATIVO.md).

@@ -45,3 +45,19 @@ O pacote Workshop NÃO inclui instalação automática de DLL em bin64. O readme
     python tools/gerar_pacotes.py --verificar
 
 Na máquina com Don't Starve Mod Tools, também pode executar `python tools/build_icon.py` e, com MinGW/Git, `powershell -File tools/build_native.ps1` sem substituir a DLL instalada. O hash da DLL está protegido pela suíte de testes.
+
+## Gate de desempenho e compatibilidade — candidata 1.0.4 r3
+
+Consultar [base de conhecimento](CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md) e QA_TERRENO_104_R3.md. Exigir telemetria do hook efetivo, teste A/B controlado de frame-time e hitches, verificação visual, cadeia GP + Snapping Tills + ActionQueue, limpeza por mundo, teste multiplayer e regressão. Teste simulado não comprova ganho real. O prewarm r2 foi confirmado, mas o hook não; r3 aguarda confirmação. Não publicar enquanto bloqueios permanecerem.
+
+## Gate complementar r4
+
+O teste de regressão de OnUpdate opaco falha em r3 e passa em r4; preservar a função por identidade. Validar logs de execução da grade e performance real; ver QA_TERRENO_104_R4.md. Não promover release pela aprovação de fixture.
+
+## Gate vanilla r5
+
+Ver QA_TERRENO_104_R5_VANILLA.md: confirmar log helpers ignorados, testar matriz sem DLL/sem mods vs DLL isolada vs QPS vanilla OFF/ON vs GP OFF/ON. Não tratar mocks como benchmark. Teste tools/test_installed_placer.lua recebe placer.lua extraído temporariamente do scripts.zip local; não redistribuir o código Klei. Modinfo 27 opções.
+
+## Gate r6
+
+Ver QA_TERRENO_104_R6_NATIVO.md. Pool confirmado em ambiente real, benefício não comprovado. Ferramenta qa_native_terrain.py e teste em diretório temporário; validar baseline vanilla puro e DLL isolada com FPS iguais. Não publicar até prova de melhoria e regressão.

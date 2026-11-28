@@ -6,7 +6,7 @@ Para liberar FPS acima de 60, instale a DLL incluída em bin64.
 Mod de cliente, sem exigir o HyperSmooth antigo ou instalação no servidor.
 ]]
 author = "café"
-version = "1.0.3"
+version = "1.0.4"
 
 api_version = 10
 dst_compatible = true
@@ -301,6 +301,26 @@ configuration_options = {
             { description = "30 Hz fixos", data = false },
         },
         default = true,
+    },
+    {
+        name = "terrain_grid_pool",
+        label = "Grade de terreno (experimental)",
+        hover = "Grade leve com pre-carregamento, reutilizacao e atualizacao em lotes para Geometric Placement 3.2.0. Experimental; desative se houver problemas.",
+        options = {
+            { description = "Desativado", data = false },
+            { description = "Ativado", data = true },
+        },
+        default = false,
+    },
+    {
+        name = "terrain_vanilla_helpers",
+        label = "Posicionador vanilla (experimental)",
+        hover = "Evita criar a grade auxiliar inutilizada pelo forcado e pisos no posicionador original. Independente do Geometric Placement; desative se houver problemas.",
+        options = {
+            { description = "Desativado", data = false },
+            { description = "Ativado", data = true },
+        },
+        default = false,
     },
     {
         name = "hotkey_cycle",

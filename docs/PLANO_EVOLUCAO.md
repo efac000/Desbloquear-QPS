@@ -48,3 +48,9 @@ Consultar a main de efac000/Desbloquear-QPS como fonte atual; a PR #58 do reposi
 - Executar GitHub Actions em Windows e Ubuntu a cada alteração da main; revisar logs e pacotes antes de cada versão.
 - Manter documentação, ícones e DLL atualizados juntos com o código-fonte correspondente.
 - Não modificar o comportamento da DLL por suposição de ganho: medir antes/depois e registrar hardware e métodos.
+
+## Atualização de continuidade — 27/11/2026 (prevalece sobre valores históricos acima)
+
+- Estável 1.0.3: 25 opções, FPS personalizado 30–1000 e ilimitado; candidata 1.0.4: 26 opções com grade experimental desligada por padrão.
+- Antes de alterar posicionadores, consultar [base de conhecimento de terreno e compatibilidade](CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md). Confirmar execução real do hook e não apenas carregamento/prewarm; testar composição de wrappers de outros mods.
+- Preservar correções Workshop 1.0.1/1.0.2 e DLL/BAT da 1.0.3. Não promover PR #1 até homologação. Os números de opções e presets anteriores são históricos.

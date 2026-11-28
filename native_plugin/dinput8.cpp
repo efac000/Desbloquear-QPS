@@ -4618,7 +4618,10 @@ DWORD WINAPI WorkerProc(LPVOID) {
     uint64_t lastIniTime = GetFileModTime(g_iniPath);
     uint64_t lastModTime = 0;
     std::wstring modBridgePath;
-    if (FindNewestModBridgeFile(modBridgePath, lastModTime)) {
+    // Isolated QA can keep the INI authoritative without reading another profile.
+    const bool legacyModBridge = ReadIniInt(L"FPS", L"legacy_mod_bridge", 1) != 0;
+    if (!legacyModBridge) LogMsg("Legacy Documents mod bridge disabled by dst_fps.ini.");
+    if (legacyModBridge && FindNewestModBridgeFile(modBridgePath, lastModTime)) {
         int mFps = 0, mSkel = 1;
         bool hFps = false, hSkel = false;
         if (ParseModBridgeFile(modBridgePath, mFps, hFps, mSkel, hSkel)) {
@@ -4755,6 +4758,8 @@ DWORD WINAPI WorkerProc(LPVOID) {
             }
             continue;
         }
+
+        if (!legacyModBridge) continue;
 
         std::wstring curModPath;
         uint64_t curModTime = 0;

@@ -1965,3 +1965,336 @@ end
 if type(modimport) == "function" then
     pcall(modimport, "keybind")
 end
+
+-- QPS_TERRAIN_BEGIN
+-- Experimental: only passive tile markers from Geometric Placement 3.2.0.
+-- The active cursor, snapping, validation and network actions remain upstream.
+do
+    if GetModConfigData("terrain_grid_pool") == true then
+        local debuglib = rawget(GLOBAL, "debug")
+        local index = GLOBAL.KnownModIndex
+        local function SourceIs(fn, id)
+            if type(fn) ~= "function" or type(debuglib) ~= "table"
+                or type(debuglib.getinfo) ~= "function" then return false end
+            local ok, info = pcall(debuglib.getinfo, fn, "S")
+            local src = ok and info and info.source
+            if type(src) ~= "string" then return false end
+            src = src:gsub("\\", "/")
+            return src:find("workshop-" .. id .. "/modmain.lua", 1, true) ~= nil
+                or src:find("/322330/" .. id .. "/modmain.lua", 1, true) ~= nil
+        end
+        local function FromGP(fn) return SourceIs(fn, "351325790") end
+        local function UpdateOrigin(fn)
+            if FromGP(fn) then return "GP" end
+            if SourceIs(fn, "2302837868") then return "Snapping Tills" end
+            if SourceIs(fn, "2873533916") then return "ActionQueue RB3" end
+            return nil
+        end
+
+        local LIMIT, TTL, BATCH = 121, 30, 8
+        local clock = GLOBAL.os.clock
+        local log = GLOBAL.print
+        local spawn = GLOBAL.SpawnPrefab
+        local report_once = {}
+        -- World/session-wide throttling, not per ephemeral placer.
+        -- Diagnostic I/O must not scale with cursor recreation.
+        local next_cycle_log = -1
+        local cycles, total_reused, total_light, total_fallback = 0, 0, 0, 0
+        local max_build, max_remove, max_refresh = 0, 0, 0
+        local marker_failed = false
+        log("[QPS TERRAIN r6] experimental habilitado")
+        local function Report(key, message)
+            if not report_once[key] then
+                report_once[key] = true
+                log("[QPS TERRAIN r6] " .. message)
+            end
+        end
+        local function Compatible(c)
+            local class = GLOBAL.require("components/placer")
+            if not FromGP(class.OnUpdate) then
+                Report("class", "fallback: classe OnUpdate nao reconhecida")
+                return false
+            end
+            for _, name in ipairs({"BuildGridPoint", "RemoveBuildGrid", "RefreshGridPoint", "RefreshBuildGrid"}) do
+                if not FromGP(c[name]) then
+                    Report("source_" .. name, "fallback: source_" .. name .. " nao reconhecido")
+                    return false
+                end
+            end
+            local idx = index or rawget(GLOBAL, "KnownModIndex")
+            if not idx or type(idx.GetModInfo) ~= "function" then
+                Report("index", "fallback: ModIndex indisponivel")
+                return false
+            end
+            local ok, info = pcall(idx.GetModInfo, idx, "workshop-351325790")
+            if not ok or type(info) ~= "table" or info.version ~= "3.2.0" then
+                Report("version", "fallback: GP 3.2.0 nao identificado")
+                return false
+            end
+            return true
+        end
+        local pool, owner, cleanup, warm = {}, nil, nil, nil
+        local function ClearWorld()
+            if cleanup then cleanup:Cancel(); cleanup = nil end
+            if warm then warm:Cancel(); warm = nil end
+            pool, owner = {}, nil
+        end
+        local function World()
+            local w = GLOBAL.TheWorld
+            if not w or not w:IsValid() then return nil end
+            if w ~= owner then
+                ClearWorld()
+                owner = w
+                w:ListenForEvent("onremove", function()
+                    if owner == w then ClearWorld() end
+                end)
+            end
+            return w
+        end
+        local function Drain()
+            cleanup = nil
+            for _ = 1, BATCH do
+                local ent = table.remove(pool)
+                if not ent then break end
+                if ent:IsValid() then ent:Remove() end
+            end
+            if #pool > 0 and owner and owner:IsValid() then
+                cleanup = owner:DoTaskInTime(0.1, Drain)
+            end
+        end
+        local function Eligible(self)
+            return self.inst and self.inst.prefab == "gridplacer" and self.builder ~= nil
+                and self.snap_to_tile == true and self.placertype == "gridplacer"
+                and self.placeTestFn == nil and self.override_testfn == nil
+                and not self.axisalignedplacement and not self.snap_to_boat_edge
+        end
+        local function Passive(ent, self)
+            return ent and ent ~= self.inst and ent ~= self.gridinst
+                and ent ~= self.tileinst and ent:IsValid()
+                and ent.prefab == "tile_outline" and ent.persists == false
+                and ent._geo_replaced_anim == true and ent:HasTag("NOCLICK")
+                and not (ent.components and ent.components.placer)
+                and ent.Transform and ent.AnimState
+        end
+        -- Native tile_outline has identical GP animation after GP post-init but no
+        -- placer component. Only passive markers use it; the active cursor is unchanged.
+        local function MakeMarker(cmp)
+            if marker_failed then return nil end
+            local ent = spawn("tile_outline")
+            if Passive(ent, cmp) then
+                ent:Hide()
+                return ent
+            end
+            if ent and ent:IsValid() then ent:Remove() end
+            marker_failed = true
+            Report("marker", "fallback: tile_outline incompativel")
+            return nil
+        end
+        AddPrefabPostInit("world", function(w)
+            if not w or not w:IsValid() then return end
+            local attempts = 0
+            local function Prewarm()
+                warm = nil
+                if not w:IsValid() or GLOBAL.TheWorld ~= w then return end
+                local player = GLOBAL.ThePlayer
+                if not player or not player.HUD then
+                    attempts = attempts + 1
+                    if attempts < 60 then warm = w:DoTaskInTime(1, Prewarm) end
+                    return
+                end
+                if not Compatible(GLOBAL.require("components/placer")) or not World() then return end
+                for _ = 1, 2 do
+                    if #pool >= 25 then break end
+                    local ent = MakeMarker({})
+                    if not ent then return end
+                    pool[#pool + 1] = ent
+                end
+                if #pool < 25 then
+                    warm = w:DoTaskInTime(0.1, Prewarm)
+                else
+                    Report("warm", "prewarm: 25 marcadores leves disponiveis")
+                end
+            end
+            warm = w:DoTaskInTime(2, Prewarm)
+        end)
+        local function Install(self)
+            if not self or not self.builder or self._qps_terrain_pool then return end
+            local oldbuild, oldremove = self.BuildGridPoint, self.RemoveBuildGrid
+            if not Compatible(self) then return end
+            self._qps_terrain_pool = true
+            -- The instance OnUpdate chain belongs to other mods or the engine.
+            -- Never wrap or require its source: verify only the GP methods we change.
+            local origin = UpdateOrigin(self.OnUpdate) or "externo/nao identificado"
+            Report("hook_" .. origin, "GP 3.2.0: hook instalado; OnUpdate preservado=" .. origin)
+            local oldrefresh = self.RefreshBuildGrid
+            local built, reused, created, fallback, checked = 0, 0, 0, 0, 0
+            local refresh_ms, build_ms, last_report = 0, 0, -100
+            local reported = false
+            local function ReportGrid()
+                if not reported and built > 0 then
+                    reported = true
+                    if not report_once.first_grid then
+                        Report("first_grid", string.format("grade executada built=%d reused=%d light=%d fallback=%d",
+                            built, reused, created, fallback))
+                    end
+                end
+            end
+            self.RefreshBuildGrid = function(cmp, remaining)
+                if not Eligible(cmp) or type(cmp.refresh_queue) ~= "table" then
+                    if cmp.build_grid then
+                        Report("ineligible", "grade ativa sem otimizacao: restricoes de compatibilidade")
+                    end
+                    return oldrefresh(cmp, remaining)
+                end
+                -- Upstream checks only every 20 points. Cap each passive batch
+                -- independently of render FPS and keep its stricter budget.
+                local budget = remaining and math.min(remaining, 0.001) or 0.001
+                if budget <= 0 then ReportGrid(); return end
+                local start = clock()
+                for _ = 1, 4 do
+                    if #cmp.refresh_queue == 0 or clock() - start >= budget then break end
+                    local coords = table.remove(cmp.refresh_queue)
+                    cmp:RefreshGridPoint(coords[1], coords[2])
+                    checked = checked + 1
+                end
+                local elapsed = (clock() - start) * 1000
+                refresh_ms = refresh_ms + elapsed
+                ReportGrid()
+                if elapsed >= 8 and clock() - last_report >= 1 then
+                    last_report = clock()
+                    log(string.format("[QPS TERRAIN r6] refresh lento=%.2fms checked=%d", elapsed, checked))
+                end
+            end
+            self.BuildGridPoint = function(cmp, x, z, pt, ent)
+                if ent == nil and Eligible(cmp) and World() then
+                    local start = clock()
+                    while #pool > 0 and ent == nil do
+                        local candidate = table.remove(pool)
+                        if Passive(candidate, cmp) then
+                            ent = candidate
+                            reused = reused + 1
+                        elseif candidate:IsValid() then candidate:Remove() end
+                    end
+                    if not ent then
+                        ent = MakeMarker(cmp)
+                        if ent then created = created + 1 else fallback = fallback + 1 end
+                    end
+                    if ent then ent.Transform:SetRotation(cmp.geometry.gridplacer_rotation) end
+                    built = built + 1
+                    local ret = oldbuild(cmp, x, z, pt, ent)
+                    build_ms = build_ms + (clock() - start) * 1000
+                    return ret
+                end
+                return oldbuild(cmp, x, z, pt, ent)
+            end
+            self.RemoveBuildGrid = function(cmp, ...)
+                local start = clock()
+                if Eligible(cmp) and cmp.build_grid and cmp.build_grid_positions
+                    and World() then
+                    for x, row in pairs(cmp.build_grid) do
+                        for z, ent in pairs(row) do
+                            if #pool < LIMIT and Passive(ent, cmp) then
+                                ent:Hide()
+                                pool[#pool + 1] = ent
+                                row[z] = nil
+                                cmp.build_grid_positions[x][z] = nil
+                            end
+                        end
+                    end
+                    if #pool > 0 and not cleanup then
+                        cleanup = owner:DoTaskInTime(TTL, Drain)
+                    end
+                end
+                local had = cmp.build_grid ~= nil
+                local ret = oldremove(cmp, ...)
+                if had and cmp.builder and cmp.snap_to_tile then
+                    ReportGrid()
+                    cycles = cycles + 1
+                    total_reused = total_reused + reused
+                    total_light = total_light + created
+                    total_fallback = total_fallback + fallback
+                    max_build = math.max(max_build, build_ms)
+                    max_remove = math.max(max_remove, (clock() - start) * 1000)
+                    max_refresh = math.max(max_refresh, refresh_ms)
+                    local now = clock()
+                    if now >= next_cycle_log then
+                        log(string.format("[QPS TERRAIN r6] ciclos=%d reused=%d light=%d fallback=%d maxbuild=%.2fms maxremove=%.2fms maxrefresh_total=%.2fms pool=%d",
+                            cycles, total_reused, total_light, total_fallback, max_build, max_remove, max_refresh, #pool))
+                        next_cycle_log = now + 5
+                        cycles, total_reused, total_light, total_fallback = 0, 0, 0, 0
+                        max_build, max_remove, max_refresh = 0, 0, 0
+                    end
+                end
+                if had then
+                    reported = false
+                    built, reused, created, fallback, checked, build_ms, refresh_ms = 0, 0, 0, 0, 0, 0, 0
+                end
+                return ret
+            end
+        end
+        AddPrefabPostInit("gridplacer", function(inst)
+            -- With no GP class, do not wrap vanilla SetBuilder at all.
+            if not FromGP(GLOBAL.require("components/placer").OnUpdate) then return end
+            local self = inst.components and inst.components.placer
+            if not self or self._qps_terrain_builder then return end
+            local oldset = self.SetBuilder
+            if type(oldset) ~= "function" then return end
+            self._qps_terrain_builder = true
+            -- Called by PlayerController after prefab and component post-inits.
+            -- Passive GP markers never receive a builder.
+            self.SetBuilder = function(cmp, ...)
+                local ret = oldset(cmp, ...)
+                if cmp.builder then Install(cmp) end
+                return ret
+            end
+        end)
+    end
+end
+-- QPS_TERRAIN_END
+
+-- QPS_VANILLA_TERRAIN_BEGIN
+-- Independent, opt-in vanilla gridplacer optimization. Do not touch cursor,
+-- OnUpdate, terrain mutation, network validation or other placer prefabs.
+if GetModConfigData("terrain_vanilla_helpers") == true then
+    local dbg = rawget(GLOBAL, "debug")
+    local function Native(fn)
+        if type(fn) ~= "function" or type(dbg) ~= "table" or type(dbg.getinfo) ~= "function" then return false end
+        local ok, info = pcall(dbg.getinfo, fn, "S")
+        local source = ok and info and info.source
+        if type(source) ~= "string" then return false end
+        source = source:gsub("\\", "/")
+        return source == "@scripts/components/placer.lua" or source == "@components/placer.lua"
+    end
+    local class = GLOBAL.require("components/placer")
+    local reported, fallback = false, false
+    AddPrefabPostInit("gridplacer", function(inst)
+        local c = inst.components and inst.components.placer
+        if not c or inst.prefab ~= "gridplacer" or c._qps_vanilla_helpers then return end
+        local init, set, update = c.InitializeAxisAlignedHelpers, c.SetBuilder, c.OnUpdate
+        -- Fail closed if another mod owns any of the relevant contracts.
+        if init ~= class.InitializeAxisAlignedHelpers or set ~= class.SetBuilder or update ~= class.OnUpdate
+            or not Native(init) or not Native(set) or not Native(update) then
+            if not fallback then
+                fallback = true
+                GLOBAL.print("[QPS VANILLA TERRAIN] fallback: metodos externos; comportamento original")
+            end
+            return
+        end
+        c._qps_vanilla_helpers = true
+        c.InitializeAxisAlignedHelpers = function(cmp, ...)
+            if cmp.inst == inst and cmp.snap_to_tile == true and cmp.axisalignedhelpers == nil
+                and cmp.builder ~= nil and cmp.builder == rawget(GLOBAL, "ThePlayer")
+                and cmp.recipe == nil and cmp.onbuilderset == nil
+                and cmp.SetBuilder == set and cmp.OnUpdate == update
+                and class.SetBuilder == set and class.OnUpdate == update then
+                if not reported then
+                    reported = true
+                    GLOBAL.print("[QPS VANILLA TERRAIN] helpers ignorados: gridplacer usa snap_to_tile")
+                end
+                return
+            end
+            return init(cmp, ...)
+        end
+    end)
+end
+-- QPS_VANILLA_TERRAIN_END
