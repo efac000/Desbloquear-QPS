@@ -52,3 +52,7 @@ R5 carregada, r4 GP hook executado com 53 ciclos, tempos Lua parciais geralmente
 ## E12 — stress de contratos não equivale a benchmark de FPS
 
 28/11/2026: 6000 ciclos GP e 407000 pontos simulados, pool <=121, 10000 posicionadores vanilla elegíveis, 100 restaurações em cópias reais. Releitura do playercontroller comprova criação condicional do cursor e remoção por inelegibilidade; não confundir hover com SetTile/onterraform. Não alterar sem perfil real; repetir A/B com FPS efetivo igual. Ver [QA intensivo r6](QA_TERRENO_104_R6_STRESS.md).
+
+## E13 — orçamento nominal de texturas não garante latência
+
+28/11/2026: r6 executou grade com reaproveitamento, mas hitches até 427,3 ms; amostra tex=274,04 ms em uma janela. Hook nativo limita fila apenas em certas condições e não interrompe uma tarefa individual. Separar hipótese de causalidade; teste texture-off reversível antes de modificar DLL. Não alterar INI compartilhado durante sessão/dedicado ativos. Ver [QA de texturas](QA_TERRENO_104_R6_TEXTURAS.md).

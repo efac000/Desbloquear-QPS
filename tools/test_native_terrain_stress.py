@@ -12,8 +12,8 @@ def main():
         game=Path(td); (game/"bin64").mkdir()
         dll,disabled,ini,j=paths(game)
         shutil.copyfile(origdll,dll);shutil.copyfile(origini,ini)
-        for i in range(100):
-            mode="spatial-off" if i%2==0 else "vanilla"
+        for i in range(150):
+            mode=("spatial-off","texture-off","vanilla")[i%3]
             with redirect_stdout(io.StringIO()):
                 apply(game,mode)
                 if mode=="vanilla":
@@ -24,6 +24,6 @@ def main():
             assert not j.exists() and not disabled.exists()
             assert sha(dll)==KNOWN and sha(ini)==before
     assert sha(origdll)==KNOWN and sha(origini)==before
-    print("PASS 100 native profile transactions on actual byte copies: 50 spatial-off, 50 vanilla, 100 exact restores; live files unchanged.")
+    print("PASS 150 native profile transactions on actual byte copies: 50 spatial-off, 50 texture-off, 50 vanilla, 150 exact restores; live files unchanged.")
 if __name__=="__main__":
     main()

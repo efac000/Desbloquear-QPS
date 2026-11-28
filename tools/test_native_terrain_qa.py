@@ -2,7 +2,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import hashlib,sys
 sys.path.insert(0,str(Path(__file__).parent))
-from qa_native_terrain import apply,restore,paths,sha,spatial_off
+from qa_native_terrain import apply,restore,paths,sha,spatial_off,feature_off
 def expect_error(fn):
     try: fn()
     except (RuntimeError,FileNotFoundError): return
@@ -11,7 +11,7 @@ with TemporaryDirectory() as tmp:
     game=Path(tmp);b=game/"bin64";b.mkdir()
     dll,disabled,ini,j=paths(game)
     data=b"test dll";dll.write_bytes(data);known=hashlib.sha256(data).hexdigest()
-    original=b"[FPS]\r\ntarget_fps=240\r\n[OPTIMIZE]\r\nfast_spatial_query=1\r\nfast_libdeflate_zip=0\r\n"
+    original=b"[FPS]\r\ntarget_fps=240\r\n[OPTIMIZE]\r\nfast_spatial_query=1\r\ntimeslice_tex_upload=1\r\nfast_libdeflate_zip=0\r\n"
     ini.write_bytes(original)
     expect_error(lambda:apply(game,"spatial-off"))
     apply(game,"spatial-off",known)
@@ -20,8 +20,14 @@ with TemporaryDirectory() as tmp:
     changed=ini.read_bytes();ini.write_bytes(changed+b"\r\n")
     expect_error(lambda:restore(game));ini.write_bytes(changed)
     restore(game);assert ini.read_bytes()==original and not j.exists()
+    apply(game,"texture-off",known)
+    assert dll.read_bytes()==data and ini.read_bytes()==original.replace(b"timeslice_tex_upload=1",b"timeslice_tex_upload=0")
+    restore(game);assert ini.read_bytes()==original and sha(dll)==known
+    expect_error(lambda:feature_off(b"[OPTIMIZE]\nTIMESLICE_TEX_UPLOAD=0\ntimeslice_tex_upload=1\n",b"timeslice_tex_upload"))
+    expect_error(lambda:feature_off(b"[FPS]\ntimeslice_tex_upload=1\n",b"timeslice_tex_upload"))
+    expect_error(lambda:apply(game,"unknown",known));assert not j.exists()
     apply(game,"vanilla",known);assert not dll.exists() and disabled.read_bytes()==data
     restore(game);assert dll.read_bytes()==data and not disabled.exists() and ini.read_bytes()==original
     expect_error(lambda:spatial_off(b"fast_spatial_query=0"))
     expect_error(lambda:spatial_off(b"fast_spatial_query=1\nfast_spatial_query=1\n"))
-print("PASS native QA profiles: known hash, exact INI change, no overwrite, conflict refusal, vanilla and byte-for-byte restore")
+print("PASS native QA profiles: known hash, exact spatial/texture INI changes, no overwrite, conflict refusal, vanilla and byte-for-byte restore")

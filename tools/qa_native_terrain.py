@@ -20,25 +20,34 @@ def atomic(p,data):
 def paths(game):
     b=game/"bin64"
     return b/"dinput8.dll", b/"dinput8.dll.qps-qa-disabled", b/"dst_fps.ini", b/"qps-native-qa"
+INI_PROFILES={"spatial-off":b"fast_spatial_query","texture-off":b"timeslice_tex_upload"}
+def feature_off(data,key):
+    # Require a unique key in OPTIMIZE. Refuse ambiguous duplicates, even 0/1.
+    matches=list(re.finditer(rb"(?im)^([ \t]*"+re.escape(key)+rb"[ \t]*=[ \t]*)([^\r\n]*)(\r?)$",data))
+    if len(matches)!=1: raise RuntimeError("Chave ausente/duplicada: "+key.decode())
+    m=matches[0]
+    headers=list(re.finditer(rb"(?im)^\s*\[([^\]\r\n]+)\][ \t]*\r?$",data[:m.start()]))
+    if not headers or headers[-1].group(1).strip().lower()!=b"optimize":
+        raise RuntimeError("Chave fora de OPTIMIZE: "+key.decode())
+    value=m.group(2)
+    if not re.fullmatch(rb"1[ \t]*",value): raise RuntimeError("Esperava "+key.decode()+"=1.")
+    return data[:m.start(2)]+b"0"+data[m.start(2)+1:]
 def spatial_off(data):
-    # Only the existing exact INI key; preserve all other bytes and line endings.
-    rx=rb"(?m)^([ \t]*fast_spatial_query[ \t]*=[ \t]*)1([ \t]*\r?)$"
-    result,n=re.subn(rx,rb"\g<1>0\g<2>",data)
-    if n!=1: raise RuntimeError("Esperava exatamente fast_spatial_query=1.")
-    return result
+    return feature_off(data,INI_PROFILES["spatial-off"])
 def apply(game,mode,known=KNOWN):
     dll,disabled,ini,j=paths(game)
     if j.exists() or disabled.exists(): raise RuntimeError("Perfil/backup anterior existe; restaure primeiro.")
     if not dll.is_file() or sha(dll)!=known or not ini.is_file(): raise RuntimeError("DLL/INI inesperados.")
+    if mode not in ("vanilla",*INI_PROFILES): raise RuntimeError("Perfil invalido")
     original=ini.read_bytes()
-    changed=spatial_off(original) if mode=="spatial-off" else original
+    changed=feature_off(original,INI_PROFILES[mode]) if mode in INI_PROFILES else original
     j.mkdir()
     (j/"original.ini").write_bytes(original)
     state={"mode":mode,"dll":known,"original_ini":hashlib.sha256(original).hexdigest(),"active_ini":hashlib.sha256(changed).hexdigest()}
     (j/"state.json").write_text(json.dumps(state),encoding="utf-8")
     try:
         if mode=="vanilla": dll.rename(disabled)
-        elif mode=="spatial-off": atomic(ini,changed)
+        elif mode in INI_PROFILES: atomic(ini,changed)
         else: raise RuntimeError("Perfil invalido")
     except Exception:
         if disabled.exists() and not dll.exists(): disabled.rename(dll)
@@ -55,7 +64,7 @@ def restore(game):
     if state["mode"]=="vanilla":
         if dll.exists() or not disabled.is_file() or sha(disabled)!=state["dll"]: raise RuntimeError("DLL inesperada.")
         disabled.rename(dll)
-    elif state["mode"]=="spatial-off":
+    elif state["mode"] in INI_PROFILES:
         if disabled.exists() or not dll.is_file() or sha(dll)!=state["dll"]: raise RuntimeError("DLL inesperada.")
         atomic(ini,original.read_bytes())
     else: raise RuntimeError("Perfil desconhecido.")
@@ -72,7 +81,7 @@ def status(game):
     else: print("Nenhum perfil QA ativo")
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument("mode",choices=["status","vanilla","spatial-off","restore"])
+    p.add_argument("mode",choices=["status","vanilla",*INI_PROFILES,"restore"])
     p.add_argument("--game",type=Path,default=DEFAULT)
     a=p.parse_args()
     if a.mode=="status": status(a.game)
