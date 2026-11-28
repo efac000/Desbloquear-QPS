@@ -48,3 +48,7 @@ Relato de stutter sem mods cliente não exclui DLL, servidor ou motor. Fazer bas
 ## E11 — execução comprovada não implica causalidade
 
 R5 carregada, r4 GP hook executado com 53 ciclos, tempos Lua parciais geralmente 0–1ms, hitches de até 157,2ms na gravação. Não continuar ampliando pool por hipótese; GP Off interno não descarrega código; r5 vanilla ficou em fallback. Limitar prints do diagnóstico por sessão, distinguir somas por ciclo de quadro, controlar FPS efetivo. R6 oferece ferramenta reversível de teste sem DLL e sem hook spatial; use apenas com jogo e dedicado fechados, backup e restauração. Nenhuma conclusão sobre culpa da DLL sem A/B. Ver [QA r6](QA_TERRENO_104_R6_NATIVO.md).
+
+## E12 — stress de contratos não equivale a benchmark de FPS
+
+28/11/2026: 6000 ciclos GP e 407000 pontos simulados, pool <=121, 10000 posicionadores vanilla elegíveis, 100 restaurações em cópias reais. Releitura do playercontroller comprova criação condicional do cursor e remoção por inelegibilidade; não confundir hover com SetTile/onterraform. Não alterar sem perfil real; repetir A/B com FPS efetivo igual. Ver [QA intensivo r6](QA_TERRENO_104_R6_STRESS.md).
