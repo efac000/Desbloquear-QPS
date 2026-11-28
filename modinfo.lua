@@ -305,7 +305,7 @@ configuration_options = {
     {
         name = "terrain_grid_pool",
         label = "Grade de terreno (experimental)",
-        hover = "Reutiliza marcadores de piso do Geometric Placement 3.2.0. Pode reduzir travadas repetidas. Desative se houver problemas.",
+        hover = "Grade leve com pre-carregamento, reutilizacao e atualizacao em lotes para Geometric Placement 3.2.0. Experimental; desative se houver problemas.",
         options = {
             { description = "Desativado", data = false },
             { description = "Ativado", data = true },
