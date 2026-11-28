@@ -1997,11 +1997,11 @@ do
         local spawn = GLOBAL.SpawnPrefab
         local report_once = {}
         local marker_failed = false
-        log("[QPS TERRAIN r3] experimental habilitado")
+        log("[QPS TERRAIN r4] experimental habilitado")
         local function Report(key, message)
             if not report_once[key] then
                 report_once[key] = true
-                log("[QPS TERRAIN r3] " .. message)
+                log("[QPS TERRAIN r4] " .. message)
             end
         end
         local function Compatible(c)
@@ -2012,13 +2012,9 @@ do
             end
             for _, name in ipairs({"BuildGridPoint", "RemoveBuildGrid", "RefreshGridPoint", "RefreshBuildGrid"}) do
                 if not FromGP(c[name]) then
-                    Report("source_" .. name, "fallback: " .. name .. " nao reconhecido")
+                    Report("source_" .. name, "fallback: source_" .. name .. " nao reconhecido")
                     return false
                 end
-            end
-            if not UpdateOrigin(c.OnUpdate) then
-                Report("update", "fallback: wrapper OnUpdate desconhecido")
-                return false
             end
             local idx = index or rawget(GLOBAL, "KnownModIndex")
             if not idx or type(idx.GetModInfo) ~= "function" then
@@ -2121,19 +2117,33 @@ do
             local oldbuild, oldremove = self.BuildGridPoint, self.RemoveBuildGrid
             if not Compatible(self) then return end
             self._qps_terrain_pool = true
-            Report("hook_" .. UpdateOrigin(self.OnUpdate),
-                "GP 3.2.0: hook instalado; OnUpdate=" .. UpdateOrigin(self.OnUpdate))
-            local oldrefresh, oldupdate = self.RefreshBuildGrid, self.OnUpdate
+            -- The instance OnUpdate chain belongs to other mods or the engine.
+            -- Never wrap or require its source: verify only the GP methods we change.
+            local origin = UpdateOrigin(self.OnUpdate) or "externo/nao identificado"
+            Report("hook_" .. origin, "GP 3.2.0: hook instalado; OnUpdate preservado=" .. origin)
+            local oldrefresh = self.RefreshBuildGrid
             local built, reused, created, fallback, checked = 0, 0, 0, 0, 0
-            local refresh_ms, last_report = 0, -100
+            local refresh_ms, build_ms, last_report = 0, 0, -100
+            local reported = false
+            local function ReportGrid()
+                if not reported and built > 0 then
+                    reported = true
+                    last_report = clock()
+                    log(string.format("[QPS TERRAIN r4] grade executada built=%d reused=%d light=%d fallback=%d build=%.2fms checked=%d refresh=%.2fms pool=%d",
+                        built, reused, created, fallback, build_ms, checked, refresh_ms, #pool))
+                end
+            end
             self.RefreshBuildGrid = function(cmp, remaining)
                 if not Eligible(cmp) or type(cmp.refresh_queue) ~= "table" then
+                    if cmp.build_grid then
+                        Report("ineligible", "grade ativa sem otimizacao: restricoes de compatibilidade")
+                    end
                     return oldrefresh(cmp, remaining)
                 end
                 -- Upstream checks only every 20 points. Cap each passive batch
                 -- independently of render FPS and keep its stricter budget.
                 local budget = remaining and math.min(remaining, 0.001) or 0.001
-                if budget <= 0 then return end
+                if budget <= 0 then ReportGrid(); return end
                 local start = clock()
                 for _ = 1, 4 do
                     if #cmp.refresh_queue == 0 or clock() - start >= budget then break end
@@ -2141,27 +2151,17 @@ do
                     cmp:RefreshGridPoint(coords[1], coords[2])
                     checked = checked + 1
                 end
-                refresh_ms = refresh_ms + (clock() - start) * 1000
-            end
-            self.OnUpdate = function(cmp, dt)
-                if not cmp.builder or not cmp.snap_to_tile then return oldupdate(cmp, dt) end
-                local had = cmp.build_grid ~= nil
-                local start = clock()
-                local ret = oldupdate(cmp, dt)
-                if cmp.build_grid and not Eligible(cmp) then
-                    Report("ineligible", "grade ativa sem otimizacao: restricoes de compatibilidade")
-                end
                 local elapsed = (clock() - start) * 1000
-                if (not had and cmp.build_grid) or (elapsed >= 8 and clock() - last_report >= 1) then
+                refresh_ms = refresh_ms + elapsed
+                ReportGrid()
+                if elapsed >= 8 and clock() - last_report >= 1 then
                     last_report = clock()
-                    log(string.format("[QPS TERRAIN r3] update=%.2fms built=%d reused=%d light=%d fallback=%d checked=%d refresh=%.2fms pool=%d",
-                        elapsed, built, reused, created, fallback, checked, refresh_ms, #pool))
-                    built, reused, created, fallback, checked, refresh_ms = 0, 0, 0, 0, 0, 0
+                    log(string.format("[QPS TERRAIN r4] refresh lento=%.2fms checked=%d", elapsed, checked))
                 end
-                return ret
             end
             self.BuildGridPoint = function(cmp, x, z, pt, ent)
                 if ent == nil and Eligible(cmp) and World() then
+                    local start = clock()
                     while #pool > 0 and ent == nil do
                         local candidate = table.remove(pool)
                         if Passive(candidate, cmp) then
@@ -2175,6 +2175,9 @@ do
                     end
                     if ent then ent.Transform:SetRotation(cmp.geometry.gridplacer_rotation) end
                     built = built + 1
+                    local ret = oldbuild(cmp, x, z, pt, ent)
+                    build_ms = build_ms + (clock() - start) * 1000
+                    return ret
                 end
                 return oldbuild(cmp, x, z, pt, ent)
             end
@@ -2199,8 +2202,13 @@ do
                 local had = cmp.build_grid ~= nil
                 local ret = oldremove(cmp, ...)
                 if had and cmp.builder and cmp.snap_to_tile then
-                    log(string.format("[QPS TERRAIN r3] remove=%.2fms pool=%d checked=%d refresh=%.2fms",
-                        (clock() - start) * 1000, #pool, checked, refresh_ms))
+                    ReportGrid()
+                    log(string.format("[QPS TERRAIN r4] remove=%.2fms pool=%d built=%d reused=%d light=%d fallback=%d checked=%d build=%.2fms refresh=%.2fms",
+                        (clock() - start) * 1000, #pool, built, reused, created, fallback, checked, build_ms, refresh_ms))
+                end
+                if had then
+                    reported = false
+                    built, reused, created, fallback, checked, build_ms, refresh_ms = 0, 0, 0, 0, 0, 0, 0
                 end
                 return ret
             end

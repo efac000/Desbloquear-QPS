@@ -80,3 +80,8 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 - Localização automática testada no Windows, corrigindo duplicação do mesmo caminho com diferenças entre maiúsculas e minúsculas.
 - Instalador nativo preserva backups e configuração existente e impede conflito com outra DLL diferente.
 - Página e documentação atualizadas, sem modificar Lua ou DLL.
+
+## Revisão 4 da candidata 1.0.4
+
+- Log real r3 confirmou novo fallback de OnUpdate desconhecido. Teste de regressão reproduziu a rejeição (RED exit 1); r4 passou ao deixar OnUpdate intacto e atuar nos métodos GP verificados (GREEN).
+- Telemetria distingue hook instalado e execução dos métodos de grade. Sem homologação de desempenho em jogo. Ver docs/QA_TERRENO_104_R4.md.

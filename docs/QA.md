@@ -49,3 +49,7 @@ Na máquina com Don't Starve Mod Tools, também pode executar `python tools/buil
 ## Gate de desempenho e compatibilidade — candidata 1.0.4 r3
 
 Consultar [base de conhecimento](CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md) e QA_TERRENO_104_R3.md. Exigir telemetria do hook efetivo, teste A/B controlado de frame-time e hitches, verificação visual, cadeia GP + Snapping Tills + ActionQueue, limpeza por mundo, teste multiplayer e regressão. Teste simulado não comprova ganho real. O prewarm r2 foi confirmado, mas o hook não; r3 aguarda confirmação. Não publicar enquanto bloqueios permanecerem.
+
+## Gate complementar r4
+
+O teste de regressão de OnUpdate opaco falha em r3 e passa em r4; preservar a função por identidade. Validar logs de execução da grade e performance real; ver QA_TERRENO_104_R4.md. Não promover release pela aprovação de fixture.

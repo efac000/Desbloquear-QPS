@@ -71,6 +71,7 @@ local function init(wrapper, passive)
     c.builder=nil
     c.SetBuilder=function(self,builder) self.builder=builder;return "builder-result" end
     if wrapper then c.OnUpdate=wrapper(c.OnUpdate) end
+    c.original_update=c.OnUpdate
     c.inst.components.placer=c;hooks.gridplacer(c.inst)
     if not passive then assert(c:SetBuilder({})=="builder-result") end
     return c
@@ -90,9 +91,20 @@ for i=1,13 do assert(tasks[i] and not tasks[i].cancelled);tasks[i].fn() end
 assert(light==25 and #tasks==13)
 local passive=init(nil,true);assert(not passive._qps_terrain_pool)
 local unknown=init(function(fn) return function(c,dt) return fn(c,dt) end end)
-assert(not unknown._qps_terrain_pool)
-local a=init(function(fn) return wrap(wrap(fn,"2302837868"),"2873533916") end)
-assert(a._qps_terrain_pool);grid(a,25)
+assert(unknown._qps_terrain_pool, "R3 regression: opaque OnUpdate must not block independent GP grid hooks")
+assert(unknown.OnUpdate==unknown.original_update)
+local bypass=init(function() return function(c) c.bypassed=true end end)
+assert(bypass._qps_terrain_pool and bypass.OnUpdate==bypass.original_update)
+bypass:OnUpdate(0);assert(bypass.bypassed and not bypass.build_grid)
+local oldrefresh=class.RefreshBuildGrid
+class.RefreshBuildGrid=function() end
+assert(not init()._qps_terrain_pool)
+class.RefreshBuildGrid=oldrefresh
+local a=init(function(fn)
+    local chain=wrap(wrap(fn,"2302837868"),"2873533916")
+    return function(c,dt) return chain(c,dt) end
+end)
+assert(a._qps_terrain_pool and a.OnUpdate==a.original_update);grid(a,25)
 a:OnUpdate(0);assert(a.wrapper_calls==2)
 assert(#a.refresh_queue>=21 and #a.refresh_queue<25)
 -- rebuild queue for existing budget assertions
@@ -121,5 +133,9 @@ other:RemoveBuildGrid();assert(removed==36)
 bad=true;local fallback=init();grid(fallback,1);assert(_G.spawned==2)
 assert(fallback.build_grid[1][1].prefab=="gridplacer")
 fallback:RemoveBuildGrid();assert(removed==38)
-assert(#logs>=3)
-print("PASS: opt-in, GP provenance, prewarm 25, light markers, capped refresh, pool, expiry, world reset, fallback")
+local all=table.concat(logs,"\n")
+assert(all:find("grade executada",1,true))
+assert(all:find("reused=25",1,true))
+assert(all:find("fallback: source_RefreshBuildGrid",1,true))
+assert(all:find("OnUpdate preservado",1,true))
+print("PASS: unchanged opaque OnUpdate, bypass preserved, GP method guard, prewarm 25, light markers, capped refresh, pool, expiry, world reset, telemetry")

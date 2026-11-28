@@ -36,3 +36,7 @@ Ambiente: build DST 763928; GP 3.2.0 (351325790); Snapping Tills 1.1.9 (23028378
 - https://github.com/rezecib/Geometric-Placement — Refresh Speed; documentação de origem.
 - https://kleiforums.com/klei-bug-tracker/dont-starve-together-beta-branch/heavy-lag-when-trying-to-place-certain-items-down-using-the-geometric-placement-mod-r34320/ — relato histórico de 2022, hipótese, não diagnóstico atual.
 - Evidência local: client_log.txt, dst_fps_plugin.log; não publicar logs completos.
+
+## Atualização r4 — erro E09 (prevalece sobre a guarda de wrappers r3)
+
+O log da r3 mostrou fallback de OnUpdate desconhecido mesmo após aceitar dois wrappers conhecidos. Não ampliar indefinidamente a lista de mods: validar o menor contrato efetivamente modificado. R4 preserva a identidade do OnUpdate por instância (inclusive wrapper de origem desconhecida), verifica classe e quatro métodos GP, não força o caminho original se outro mod o desviar. Red/green demonstrado em Lua 5.1. Telemetria deve indicar hook instalado E grade executada com reused/light positivos. R4 não foi homologada em jogo; veja [QA_TERRENO_104_R4.md](QA_TERRENO_104_R4.md). Se o hook atuar, medir outros gargalos antes de modificar a DLL ou o mapa.
