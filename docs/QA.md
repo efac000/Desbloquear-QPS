@@ -45,3 +45,7 @@ O pacote Workshop NÃO inclui instalação automática de DLL em bin64. O readme
     python tools/gerar_pacotes.py --verificar
 
 Na máquina com Don't Starve Mod Tools, também pode executar `python tools/build_icon.py` e, com MinGW/Git, `powershell -File tools/build_native.ps1` sem substituir a DLL instalada. O hash da DLL está protegido pela suíte de testes.
+
+## Gate de desempenho e compatibilidade — candidata 1.0.4 r3
+
+Consultar [base de conhecimento](CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md) e QA_TERRENO_104_R3.md. Exigir telemetria do hook efetivo, teste A/B controlado de frame-time e hitches, verificação visual, cadeia GP + Snapping Tills + ActionQueue, limpeza por mundo, teste multiplayer e regressão. Teste simulado não comprova ganho real. O prewarm r2 foi confirmado, mas o hook não; r3 aguarda confirmação. Não publicar enquanto bloqueios permanecerem.

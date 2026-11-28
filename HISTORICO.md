@@ -4,6 +4,13 @@
 - Desativada por padrão; sem mudanças na DLL, no terreno real ou no instalador.
 - Homologação gráfica e multiplayer pendentes. Ver docs/QA_TERRENO_104.md.
 
+## Evolução da candidata 1.0.4 (27/11/2026)
+
+- r1 (01d9e51): pool de marcadores; travadas persistiram no teste real.
+- r2 (d1bedf7): marcadores leves, pré-aquecimento, refresh limitado e telemetria; pré-aquecimento confirmado, mas fallback de integração no cliente.
+- r3 (87d523c): preserva wrappers conhecidos do Snapping Tills e ActionQueue RB3 e instala no SetBuilder do cursor. Testes simulados, lint e integridade aprovados; execução efetiva e melhora em jogo ainda não homologadas.
+- Lições, erros, evidências, decisões e protocolo de aceitação em [base de conhecimento](docs/CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md). A versão pública continua 1.0.3, DLL e BAT preservados.
+
 # 1.0.3 - Instalador
 
 - Mensagens distintas para instalacao, atualizacao e DLL ja atualizada.
