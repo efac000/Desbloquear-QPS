@@ -203,3 +203,7 @@ print(run.stdout.strip())
 run = subprocess.run(["lua", "tools/test_vanilla_terrain.lua"], cwd=str(ROOT), capture_output=True, text=True)
 assert run.returncode == 0, run.stderr
 print(run.stdout.strip())
+
+run = subprocess.run([sys.executable, "tools/test_native_terrain_qa.py"], cwd=str(ROOT), capture_output=True, text=True)
+assert run.returncode == 0, run.stderr
+print(run.stdout.strip())

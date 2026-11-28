@@ -90,3 +90,8 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 
 - Relato de travadas sem mods cliente levou à inspeção dos scripts vanilla. Encontradas 50 criações auxiliares síncronas no SetBuilder do gridplacer no tuning padrão; nova opção independente e desativada por padrão evita as criações no caminho original compatível.
 - Testes com o código vanilla instalado e APIs nativas simuladas: 50 para 0 criações, validações e mouse/controle preservados. Ainda não há prova de ganho real. Ver [QA r5](docs/QA_TERRENO_104_R5_VANILLA.md).
+
+## Candidata 1.0.4 r6 — diagnóstico nativo
+
+- Execução do pool confirmada em jogo (53 ciclos); travadas persistem, r5 vanilla em fallback. Reduzido spam de telemetria e criada ferramenta QA reversível para isolar DLL/consultas espaciais.
+- Nenhum perfil real aplicado; sem correção de FPS comprovada. Ver [QA r6](docs/QA_TERRENO_104_R6_NATIVO.md).

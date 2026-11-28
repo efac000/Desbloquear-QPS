@@ -1996,12 +1996,17 @@ do
         local log = GLOBAL.print
         local spawn = GLOBAL.SpawnPrefab
         local report_once = {}
+        -- World/session-wide throttling, not per ephemeral placer.
+        -- Diagnostic I/O must not scale with cursor recreation.
+        local next_cycle_log = -1
+        local cycles, total_reused, total_light, total_fallback = 0, 0, 0, 0
+        local max_build, max_remove, max_refresh = 0, 0, 0
         local marker_failed = false
-        log("[QPS TERRAIN r4] experimental habilitado")
+        log("[QPS TERRAIN r6] experimental habilitado")
         local function Report(key, message)
             if not report_once[key] then
                 report_once[key] = true
-                log("[QPS TERRAIN r4] " .. message)
+                log("[QPS TERRAIN r6] " .. message)
             end
         end
         local function Compatible(c)
@@ -2128,9 +2133,10 @@ do
             local function ReportGrid()
                 if not reported and built > 0 then
                     reported = true
-                    last_report = clock()
-                    log(string.format("[QPS TERRAIN r4] grade executada built=%d reused=%d light=%d fallback=%d build=%.2fms checked=%d refresh=%.2fms pool=%d",
-                        built, reused, created, fallback, build_ms, checked, refresh_ms, #pool))
+                    if not report_once.first_grid then
+                        Report("first_grid", string.format("grade executada built=%d reused=%d light=%d fallback=%d",
+                            built, reused, created, fallback))
+                    end
                 end
             end
             self.RefreshBuildGrid = function(cmp, remaining)
@@ -2156,7 +2162,7 @@ do
                 ReportGrid()
                 if elapsed >= 8 and clock() - last_report >= 1 then
                     last_report = clock()
-                    log(string.format("[QPS TERRAIN r4] refresh lento=%.2fms checked=%d", elapsed, checked))
+                    log(string.format("[QPS TERRAIN r6] refresh lento=%.2fms checked=%d", elapsed, checked))
                 end
             end
             self.BuildGridPoint = function(cmp, x, z, pt, ent)
@@ -2203,8 +2209,21 @@ do
                 local ret = oldremove(cmp, ...)
                 if had and cmp.builder and cmp.snap_to_tile then
                     ReportGrid()
-                    log(string.format("[QPS TERRAIN r4] remove=%.2fms pool=%d built=%d reused=%d light=%d fallback=%d checked=%d build=%.2fms refresh=%.2fms",
-                        (clock() - start) * 1000, #pool, built, reused, created, fallback, checked, build_ms, refresh_ms))
+                    cycles = cycles + 1
+                    total_reused = total_reused + reused
+                    total_light = total_light + created
+                    total_fallback = total_fallback + fallback
+                    max_build = math.max(max_build, build_ms)
+                    max_remove = math.max(max_remove, (clock() - start) * 1000)
+                    max_refresh = math.max(max_refresh, refresh_ms)
+                    local now = clock()
+                    if now >= next_cycle_log then
+                        log(string.format("[QPS TERRAIN r6] ciclos=%d reused=%d light=%d fallback=%d maxbuild=%.2fms maxremove=%.2fms maxrefresh_total=%.2fms pool=%d",
+                            cycles, total_reused, total_light, total_fallback, max_build, max_remove, max_refresh, #pool))
+                        next_cycle_log = now + 5
+                        cycles, total_reused, total_light, total_fallback = 0, 0, 0, 0
+                        max_build, max_remove, max_refresh = 0, 0, 0
+                    end
                 end
                 if had then
                     reported = false

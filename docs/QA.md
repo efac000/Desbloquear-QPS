@@ -57,3 +57,7 @@ O teste de regressão de OnUpdate opaco falha em r3 e passa em r4; preservar a f
 ## Gate vanilla r5
 
 Ver QA_TERRENO_104_R5_VANILLA.md: confirmar log helpers ignorados, testar matriz sem DLL/sem mods vs DLL isolada vs QPS vanilla OFF/ON vs GP OFF/ON. Não tratar mocks como benchmark. Teste tools/test_installed_placer.lua recebe placer.lua extraído temporariamente do scripts.zip local; não redistribuir o código Klei. Modinfo 27 opções.
+
+## Gate r6
+
+Ver QA_TERRENO_104_R6_NATIVO.md. Pool confirmado em ambiente real, benefício não comprovado. Ferramenta qa_native_terrain.py e teste em diretório temporário; validar baseline vanilla puro e DLL isolada com FPS iguais. Não publicar até prova de melhoria e regressão.

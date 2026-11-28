@@ -44,3 +44,7 @@ O log da r3 mostrou fallback de OnUpdate desconhecido mesmo após aceitar dois w
 ## E10 — mods cliente OFF não equivale a vanilla
 
 Relato de stutter sem mods cliente não exclui DLL, servidor ou motor. Fazer baseline sem DLL e sem mods em ambiente controlado. No build inspecionado, SetBuilder cria 50 marcadores auxiliares mesmo em snap_to_tile, que não usa o alinhamento auxiliar. R5 evita apenas essa alocação quando métodos originais verificados, opção independente OFF por padrão; manter método externo intacto. Testes com script real e APIs simuladas demonstram contagem 50→0, não ganho real. Distinguir equipar/hover de Map:SetTile e eventos. Ver [QA r5](QA_TERRENO_104_R5_VANILLA.md).
+
+## E11 — execução comprovada não implica causalidade
+
+R5 carregada, r4 GP hook executado com 53 ciclos, tempos Lua parciais geralmente 0–1ms, hitches de até 157,2ms na gravação. Não continuar ampliando pool por hipótese; GP Off interno não descarrega código; r5 vanilla ficou em fallback. Limitar prints do diagnóstico por sessão, distinguir somas por ciclo de quadro, controlar FPS efetivo. R6 oferece ferramenta reversível de teste sem DLL e sem hook spatial; use apenas com jogo e dedicado fechados, backup e restauração. Nenhuma conclusão sobre culpa da DLL sem A/B. Ver [QA r6](QA_TERRENO_104_R6_NATIVO.md).
