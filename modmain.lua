@@ -1965,3 +1965,110 @@ end
 if type(modimport) == "function" then
     pcall(modimport, "keybind")
 end
+
+-- QPS_TERRAIN_BEGIN
+-- Experimental: only passive tile markers from Geometric Placement 3.2.0.
+-- The active cursor, snapping, validation and network actions remain upstream.
+do
+    if GetModConfigData("terrain_grid_pool") == true then
+        local debuglib = rawget(GLOBAL, "debug")
+        local index = GLOBAL.KnownModIndex
+        local function FromGP(fn)
+            if type(fn) ~= "function" or type(debuglib) ~= "table"
+                or type(debuglib.getinfo) ~= "function" then return false end
+            local ok, info = pcall(debuglib.getinfo, fn, "S")
+            local src = ok and info and info.source
+            if type(src) ~= "string" then return false end
+            src = src:gsub("\\", "/")
+            return src:find("workshop-351325790/modmain.lua", 1, true) ~= nil
+                or src:find("/322330/351325790/modmain.lua", 1, true) ~= nil
+        end
+
+        local LIMIT, TTL, BATCH = 121, 5, 8
+        local pool, owner, cleanup = {}, nil, nil
+        local function ClearWorld()
+            if cleanup then cleanup:Cancel(); cleanup = nil end
+            pool, owner = {}, nil
+        end
+        local function World()
+            local w = GLOBAL.TheWorld
+            if not w or not w:IsValid() then return nil end
+            if w ~= owner then
+                ClearWorld()
+                owner = w
+                w:ListenForEvent("onremove", function()
+                    if owner == w then ClearWorld() end
+                end)
+            end
+            return w
+        end
+        local function Drain()
+            cleanup = nil
+            for _ = 1, BATCH do
+                local ent = table.remove(pool)
+                if not ent then break end
+                if ent:IsValid() then ent:Remove() end
+            end
+            if #pool > 0 and owner and owner:IsValid() then
+                cleanup = owner:DoTaskInTime(0.1, Drain)
+            end
+        end
+        local function Eligible(self)
+            return self.inst and self.inst.prefab == "gridplacer"
+                and self.snap_to_tile == true and self.placertype == "gridplacer"
+                and self.placeTestFn == nil and self.override_testfn == nil
+                and not self.axisalignedplacement and not self.snap_to_boat_edge
+        end
+        local function Passive(ent, self)
+            local c = ent and ent.components and ent.components.placer
+            return ent and ent ~= self.inst and ent ~= self.gridinst
+                and ent ~= self.tileinst and ent:IsValid()
+                and ent.prefab == "gridplacer" and ent.persists == false
+                and ent._geo_replaced_anim == true and ent:HasTag("NOCLICK")
+                and c and c.builder == nil and c.snap_to_tile == true
+        end
+        AddPrefabPostInit("gridplacer", function(inst)
+            local self = inst.components and inst.components.placer
+            if not self or self._qps_terrain_pool then return end
+            local oldbuild, oldremove = self.BuildGridPoint, self.RemoveBuildGrid
+            if not FromGP(oldbuild) or not FromGP(oldremove)
+                or not FromGP(self.OnUpdate) or not FromGP(self.RefreshGridPoint)
+                or not index or type(index.GetModInfo) ~= "function" then return end
+            local ok, info = pcall(index.GetModInfo, index, "workshop-351325790")
+            if not ok or type(info) ~= "table" or info.version ~= "3.2.0" then return end
+            self._qps_terrain_pool = true
+            self.BuildGridPoint = function(cmp, x, z, pt, ent)
+                if ent == nil and Eligible(cmp) and World() then
+                    while #pool > 0 and ent == nil do
+                        local candidate = table.remove(pool)
+                        if Passive(candidate, cmp) then
+                            ent = candidate
+                            ent.Transform:SetRotation(cmp.geometry.gridplacer_rotation)
+                        elseif candidate:IsValid() then candidate:Remove() end
+                    end
+                end
+                return oldbuild(cmp, x, z, pt, ent)
+            end
+            self.RemoveBuildGrid = function(cmp, ...)
+                if Eligible(cmp) and cmp.build_grid and cmp.build_grid_positions
+                    and World() then
+                    for x, row in pairs(cmp.build_grid) do
+                        for z, ent in pairs(row) do
+                            if #pool < LIMIT and Passive(ent, cmp) then
+                                ent:Hide()
+                                pool[#pool + 1] = ent
+                                row[z] = nil
+                                cmp.build_grid_positions[x][z] = nil
+                            end
+                        end
+                    end
+                    if #pool > 0 and not cleanup then
+                        cleanup = owner:DoTaskInTime(TTL, Drain)
+                    end
+                end
+                return oldremove(cmp, ...)
+            end
+        end)
+    end
+end
+-- QPS_TERRAIN_END

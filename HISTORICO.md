@@ -1,3 +1,9 @@
+# 1.0.4 - candidata (não publicada)
+
+- Reutilização experimental de marcadores visuais de terreno do Geometric Placement 3.2.0, com limite e expiração.
+- Desativada por padrão; sem mudanças na DLL, no terreno real ou no instalador.
+- Homologação gráfica e multiplayer pendentes. Ver docs/QA_TERRENO_104.md.
+
 # 1.0.3 - Instalador
 
 - Mensagens distintas para instalacao, atualizacao e DLL ja atualizada.

@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 info=(ROOT/"modinfo.lua").read_text(encoding="utf-8-sig")
 assert 'name = "Desbloquear QPS"' in info
 assert 'author = "café"' in info
-assert 'version = "1.0.3"' in info
+assert 'version = "1.0.4"' in info
 assert 'client_only_mod = true' in info
 s=info.split("configuration_options = {",1)[1]
 names=re.findall(r'(?m)^\s*name = "([a-z_0-9]+)"',s)
@@ -24,14 +24,15 @@ expected_defaults={
  "keep_shard_assets":"true",
  "skip_top_mods_query":"true","skip_motd_delay":"true",
  "show_fps_hud":"true","show_1pct_low":"true","auto_60hz_sim":"true",
+ "terrain_grid_pool":"false",
  "hotkey_cycle":'"KEY_DISABLED"',"hotkey_skeletal":'"KEY_DISABLED"',
  "hotkey_hud":'"KEY_DISABLED"',"hotkey_visual":'"KEY_DISABLED"'
 }
-assert len(names)==len(defaults)==25 and len(set(names))==25, (len(names),len(defaults))
+assert len(names)==len(defaults)==26 and len(set(names))==26, (len(names),len(defaults))
 assert dict(zip(names,defaults))==expected_defaults,dict(zip(names,defaults))
 values=re.findall(r'\bdata = ([^},\n]+)',s)
 # 7 FPS, 4 perfis, 7 opcoes visuais binarias, 11 opcoes funcionais binarias.
-expected_values = ['"preset"','"custom"',"60","120","144","165","240","360","0","0","1","2","3"] + ["false","true"]*7 + ["true","false"]*10
+expected_values = ['"preset"','"custom"',"60","120","144","165","240","360","0","0","1","2","3"] + ["false","true"]*7 + ["true","false"]*10 + ["false","true"]
 assert [v.strip() for v in values] == expected_values, values
 
 for filename in ["modinfo.lua","modmain.lua","keybind.lua"]:
@@ -40,7 +41,7 @@ for filename in ["modinfo.lua","modmain.lua","keybind.lua"]:
     assert not re.search(r'[\u3400-\u9fff]',code),file
     t=subprocess.run(["luac","-p",str(file)],capture_output=True,text=True)
     assert t.returncode==0,(file,t.stderr)
-print("PASS: modinfo / 25 chaves / Lua 5.1 / sem ideogramas")
+print("PASS: modinfo / 26 chaves / Lua 5.1 / sem ideogramas")
 
 for n in ["hs_kawase_down.ksh","hs_kawase_up.ksh","hs_postprocess_bloom.ksh","hs_visual_final.ksh"]:
     assert (ROOT/"shaders"/n).stat().st_size>250
@@ -134,7 +135,7 @@ end
 assert(pcall(code))
 assert(env.name == "Desbloquear QPS")
 assert(env.client_only_mod == true)
-assert(type(env.configuration_options) == "table" and #env.configuration_options == 25)
+assert(type(env.configuration_options) == "table" and #env.configuration_options == 26)
 assert(type(env.keys) == "table" and #env.keys > 70)
 """
 test = subprocess.run(["lua","-e",bare],cwd=str(ROOT),capture_output=True,text=True)
@@ -193,3 +194,7 @@ print("PASS: CTA principal e links correspondem exatamente a versao exibida")
 assert "ATUALIZADO COM SUCESSO" in wrapper and "JA ESTA ATUALIZADO COM SUCESSO" in wrapper
 assert "function Show-Success" in wrapper and "A DLL final nao passou" in wrapper
 print("PASS: mensagens de instalacao, atualizacao e verificacao final")
+
+run = subprocess.run(["lua", "tools/test_terrain.lua"], cwd=str(ROOT), capture_output=True, text=True)
+assert run.returncode == 0, run.stderr
+print(run.stdout.strip())
