@@ -56,3 +56,7 @@ R5 carregada, r4 GP hook executado com 53 ciclos, tempos Lua parciais geralmente
 ## E13 — orçamento nominal de texturas não garante latência
 
 28/11/2026: r6 executou grade com reaproveitamento, mas hitches até 427,3 ms; amostra tex=274,04 ms em uma janela. Hook nativo limita fila apenas em certas condições e não interrompe uma tarefa individual. Separar hipótese de causalidade; teste texture-off reversível antes de modificar DLL. Não alterar INI compartilhado durante sessão/dedicado ativos. Ver [QA de texturas](QA_TERRENO_104_R6_TEXTURAS.md).
+
+## E14 — perfil nativo aplicado com controle de uma variável
+
+28/11/2026: texture-off aplicado com todos processos DST fechados; delta de um byte verificado, DLL/mod intactos e logs baseline preservados localmente. Não confundir aplicação de perfil com correção validada. Ver [QA local](QA_TERRENO_104_TEXTURE_OFF_LOCAL.md).
