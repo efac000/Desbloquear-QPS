@@ -85,3 +85,8 @@ O protótipo **Café Smooth v1.0.0**, adicionado pela PR #58, já havia passado 
 
 - Log real r3 confirmou novo fallback de OnUpdate desconhecido. Teste de regressão reproduziu a rejeição (RED exit 1); r4 passou ao deixar OnUpdate intacto e atuar nos métodos GP verificados (GREEN).
 - Telemetria distingue hook instalado e execução dos métodos de grade. Sem homologação de desempenho em jogo. Ver docs/QA_TERRENO_104_R4.md.
+
+## Candidata 1.0.4 r5 — posicionador original
+
+- Relato de travadas sem mods cliente levou à inspeção dos scripts vanilla. Encontradas 50 criações auxiliares síncronas no SetBuilder do gridplacer no tuning padrão; nova opção independente e desativada por padrão evita as criações no caminho original compatível.
+- Testes com o código vanilla instalado e APIs nativas simuladas: 50 para 0 criações, validações e mouse/controle preservados. Ainda não há prova de ganho real. Ver [QA r5](docs/QA_TERRENO_104_R5_VANILLA.md).

@@ -40,3 +40,7 @@ Ambiente: build DST 763928; GP 3.2.0 (351325790); Snapping Tills 1.1.9 (23028378
 ## Atualização r4 — erro E09 (prevalece sobre a guarda de wrappers r3)
 
 O log da r3 mostrou fallback de OnUpdate desconhecido mesmo após aceitar dois wrappers conhecidos. Não ampliar indefinidamente a lista de mods: validar o menor contrato efetivamente modificado. R4 preserva a identidade do OnUpdate por instância (inclusive wrapper de origem desconhecida), verifica classe e quatro métodos GP, não força o caminho original se outro mod o desviar. Red/green demonstrado em Lua 5.1. Telemetria deve indicar hook instalado E grade executada com reused/light positivos. R4 não foi homologada em jogo; veja [QA_TERRENO_104_R4.md](QA_TERRENO_104_R4.md). Se o hook atuar, medir outros gargalos antes de modificar a DLL ou o mapa.
+
+## E10 — mods cliente OFF não equivale a vanilla
+
+Relato de stutter sem mods cliente não exclui DLL, servidor ou motor. Fazer baseline sem DLL e sem mods em ambiente controlado. No build inspecionado, SetBuilder cria 50 marcadores auxiliares mesmo em snap_to_tile, que não usa o alinhamento auxiliar. R5 evita apenas essa alocação quando métodos originais verificados, opção independente OFF por padrão; manter método externo intacto. Testes com script real e APIs simuladas demonstram contagem 50→0, não ganho real. Distinguir equipar/hover de Map:SetTile e eventos. Ver [QA r5](QA_TERRENO_104_R5_VANILLA.md).

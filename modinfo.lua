@@ -313,6 +313,16 @@ configuration_options = {
         default = false,
     },
     {
+        name = "terrain_vanilla_helpers",
+        label = "Posicionador vanilla (experimental)",
+        hover = "Evita criar a grade auxiliar inutilizada pelo forcado e pisos no posicionador original. Independente do Geometric Placement; desative se houver problemas.",
+        options = {
+            { description = "Desativado", data = false },
+            { description = "Ativado", data = true },
+        },
+        default = false,
+    },
+    {
         name = "hotkey_cycle",
         label = "Tecla: FPS",
         hover = "Grave uma tecla para alternar o limite de FPS.",

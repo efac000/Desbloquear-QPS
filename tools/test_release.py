@@ -25,14 +25,15 @@ expected_defaults={
  "skip_top_mods_query":"true","skip_motd_delay":"true",
  "show_fps_hud":"true","show_1pct_low":"true","auto_60hz_sim":"true",
  "terrain_grid_pool":"false",
+ "terrain_vanilla_helpers":"false",
  "hotkey_cycle":'"KEY_DISABLED"',"hotkey_skeletal":'"KEY_DISABLED"',
  "hotkey_hud":'"KEY_DISABLED"',"hotkey_visual":'"KEY_DISABLED"'
 }
-assert len(names)==len(defaults)==26 and len(set(names))==26, (len(names),len(defaults))
+assert len(names)==len(defaults)==27 and len(set(names))==27, (len(names),len(defaults))
 assert dict(zip(names,defaults))==expected_defaults,dict(zip(names,defaults))
 values=re.findall(r'\bdata = ([^},\n]+)',s)
 # 7 FPS, 4 perfis, 7 opcoes visuais binarias, 11 opcoes funcionais binarias.
-expected_values = ['"preset"','"custom"',"60","120","144","165","240","360","0","0","1","2","3"] + ["false","true"]*7 + ["true","false"]*10 + ["false","true"]
+expected_values = ['"preset"','"custom"',"60","120","144","165","240","360","0","0","1","2","3"] + ["false","true"]*7 + ["true","false"]*10 + ["false","true"]*2
 assert [v.strip() for v in values] == expected_values, values
 
 for filename in ["modinfo.lua","modmain.lua","keybind.lua"]:
@@ -41,7 +42,7 @@ for filename in ["modinfo.lua","modmain.lua","keybind.lua"]:
     assert not re.search(r'[\u3400-\u9fff]',code),file
     t=subprocess.run(["luac","-p",str(file)],capture_output=True,text=True)
     assert t.returncode==0,(file,t.stderr)
-print("PASS: modinfo / 26 chaves / Lua 5.1 / sem ideogramas")
+print("PASS: modinfo / 27 chaves / Lua 5.1 / sem ideogramas")
 
 for n in ["hs_kawase_down.ksh","hs_kawase_up.ksh","hs_postprocess_bloom.ksh","hs_visual_final.ksh"]:
     assert (ROOT/"shaders"/n).stat().st_size>250
@@ -135,7 +136,7 @@ end
 assert(pcall(code))
 assert(env.name == "Desbloquear QPS")
 assert(env.client_only_mod == true)
-assert(type(env.configuration_options) == "table" and #env.configuration_options == 26)
+assert(type(env.configuration_options) == "table" and #env.configuration_options == 27)
 assert(type(env.keys) == "table" and #env.keys > 70)
 """
 test = subprocess.run(["lua","-e",bare],cwd=str(ROOT),capture_output=True,text=True)
@@ -196,5 +197,9 @@ assert "function Show-Success" in wrapper and "A DLL final nao passou" in wrappe
 print("PASS: mensagens de instalacao, atualizacao e verificacao final")
 
 run = subprocess.run(["lua", "tools/test_terrain.lua"], cwd=str(ROOT), capture_output=True, text=True)
+assert run.returncode == 0, run.stderr
+print(run.stdout.strip())
+
+run = subprocess.run(["lua", "tools/test_vanilla_terrain.lua"], cwd=str(ROOT), capture_output=True, text=True)
 assert run.returncode == 0, run.stderr
 print(run.stdout.strip())

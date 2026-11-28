@@ -2214,6 +2214,8 @@ do
             end
         end
         AddPrefabPostInit("gridplacer", function(inst)
+            -- With no GP class, do not wrap vanilla SetBuilder at all.
+            if not FromGP(GLOBAL.require("components/placer").OnUpdate) then return end
             local self = inst.components and inst.components.placer
             if not self or self._qps_terrain_builder then return end
             local oldset = self.SetBuilder
@@ -2230,3 +2232,50 @@ do
     end
 end
 -- QPS_TERRAIN_END
+
+-- QPS_VANILLA_TERRAIN_BEGIN
+-- Independent, opt-in vanilla gridplacer optimization. Do not touch cursor,
+-- OnUpdate, terrain mutation, network validation or other placer prefabs.
+if GetModConfigData("terrain_vanilla_helpers") == true then
+    local dbg = rawget(GLOBAL, "debug")
+    local function Native(fn)
+        if type(fn) ~= "function" or type(dbg) ~= "table" or type(dbg.getinfo) ~= "function" then return false end
+        local ok, info = pcall(dbg.getinfo, fn, "S")
+        local source = ok and info and info.source
+        if type(source) ~= "string" then return false end
+        source = source:gsub("\\", "/")
+        return source == "@scripts/components/placer.lua" or source == "@components/placer.lua"
+    end
+    local class = GLOBAL.require("components/placer")
+    local reported, fallback = false, false
+    AddPrefabPostInit("gridplacer", function(inst)
+        local c = inst.components and inst.components.placer
+        if not c or inst.prefab ~= "gridplacer" or c._qps_vanilla_helpers then return end
+        local init, set, update = c.InitializeAxisAlignedHelpers, c.SetBuilder, c.OnUpdate
+        -- Fail closed if another mod owns any of the relevant contracts.
+        if init ~= class.InitializeAxisAlignedHelpers or set ~= class.SetBuilder or update ~= class.OnUpdate
+            or not Native(init) or not Native(set) or not Native(update) then
+            if not fallback then
+                fallback = true
+                GLOBAL.print("[QPS VANILLA TERRAIN] fallback: metodos externos; comportamento original")
+            end
+            return
+        end
+        c._qps_vanilla_helpers = true
+        c.InitializeAxisAlignedHelpers = function(cmp, ...)
+            if cmp.inst == inst and cmp.snap_to_tile == true and cmp.axisalignedhelpers == nil
+                and cmp.builder ~= nil and cmp.builder == rawget(GLOBAL, "ThePlayer")
+                and cmp.recipe == nil and cmp.onbuilderset == nil
+                and cmp.SetBuilder == set and cmp.OnUpdate == update
+                and class.SetBuilder == set and class.OnUpdate == update then
+                if not reported then
+                    reported = true
+                    GLOBAL.print("[QPS VANILLA TERRAIN] helpers ignorados: gridplacer usa snap_to_tile")
+                end
+                return
+            end
+            return init(cmp, ...)
+        end
+    end)
+end
+-- QPS_VANILLA_TERRAIN_END

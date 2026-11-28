@@ -53,3 +53,7 @@ Consultar [base de conhecimento](CONHECIMENTO_TERRENO_E_COMPATIBILIDADE.md) e QA
 ## Gate complementar r4
 
 O teste de regressão de OnUpdate opaco falha em r3 e passa em r4; preservar a função por identidade. Validar logs de execução da grade e performance real; ver QA_TERRENO_104_R4.md. Não promover release pela aprovação de fixture.
+
+## Gate vanilla r5
+
+Ver QA_TERRENO_104_R5_VANILLA.md: confirmar log helpers ignorados, testar matriz sem DLL/sem mods vs DLL isolada vs QPS vanilla OFF/ON vs GP OFF/ON. Não tratar mocks como benchmark. Teste tools/test_installed_placer.lua recebe placer.lua extraído temporariamente do scripts.zip local; não redistribuir o código Klei. Modinfo 27 opções.
