@@ -18,3 +18,11 @@ Build MinGW concluido. SHA-256 do binario de QA: `98d0ba6b36eae68436cc42888a8476
 | DLL de referencia, texturas ativas | 556 | 16,66 | 17,17 | 18,28 | 19,41 | 19,41 | 0 |
 
 Valores em ms, coluna MsBetweenPresents, percentis por posto mais proximo. As capturas tem duracoes diferentes (44,93 s e 9,27 s) e os tempos das acoes nao foram confirmados dentro dos CSVs. O log da referencia registrou ainda 167,9 ms e 47,3 ms antes da captura, sem correlacao com acao. As amostras nao sustentam causalidade ou ganho de desempenho. O gate de terreno continua NO-GO. Falta repetir o roteiro com marcadores precisos em A/B/C, a partir do mesmo save e com o mesmo limite efetivo.
+
+## Instalação para teste pela Steam
+
+Em 28/11/2026 às 11:22 (Brasília), com o DST fechado, a compilação de QA do commit 2642223 foi instalada no bin64 principal. A leitura após a troca confirmou a DLL 98d0ba6b36eae68436cc42888a847621025f9e34220e25a23b2357d143ca71c5 e o INI 0d5a5c61569f87d24656c8de3c25e1ab7b1be2c73ad2e2d52683e3c8bb928a5c. O INI recebeu apenas legacy_mod_bridge=0 em FPS. timeslice_tex_upload=0 e o mod Lua r6 foram preservados.
+
+O backup qps-steam-backup-20261128-112244, na pasta work da sessão Codex, contém a DLL anterior, o INI texture-off anterior e uma cópia do journal qps-native-qa. Para rollback, fechar o DST e restaurar primeiro DLL e INI desse backup, conferindo os hashes anteriores ac60fd192f0fc8632b9c06c1ff7d8bf1afadf00151695ce0920ee77a99f949d5 e 00fc05809f3aa138d7034c5b9949e55398d634eb33bbee8558ea9582cf9476a6, respectivamente. Só então usar qa_native_terrain.py restore se a intenção também for desfazer texture-off. O journal usa os hashes do par anterior.
+
+Antes de pedir validação em jogo, identificar se o usuário abrirá a Steam ou a cópia isolada. Verificar por hash a DLL e o INI no bin64 correspondente. Após iniciar, confirmar o módulo carregado no PID do cliente e o perfil efetivo no log novo. Registrar separadamente build, instalação, execução e resultado do teste. A DLL compilada corrige a leitura de configuração legada em QA. A homologação do stutter com Geometric Placement continua pendente.
