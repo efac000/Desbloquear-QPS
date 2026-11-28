@@ -1973,15 +1973,22 @@ do
     if GetModConfigData("terrain_grid_pool") == true then
         local debuglib = rawget(GLOBAL, "debug")
         local index = GLOBAL.KnownModIndex
-        local function FromGP(fn)
+        local function SourceIs(fn, id)
             if type(fn) ~= "function" or type(debuglib) ~= "table"
                 or type(debuglib.getinfo) ~= "function" then return false end
             local ok, info = pcall(debuglib.getinfo, fn, "S")
             local src = ok and info and info.source
             if type(src) ~= "string" then return false end
             src = src:gsub("\\", "/")
-            return src:find("workshop-351325790/modmain.lua", 1, true) ~= nil
-                or src:find("/322330/351325790/modmain.lua", 1, true) ~= nil
+            return src:find("workshop-" .. id .. "/modmain.lua", 1, true) ~= nil
+                or src:find("/322330/" .. id .. "/modmain.lua", 1, true) ~= nil
+        end
+        local function FromGP(fn) return SourceIs(fn, "351325790") end
+        local function UpdateOrigin(fn)
+            if FromGP(fn) then return "GP" end
+            if SourceIs(fn, "2302837868") then return "Snapping Tills" end
+            if SourceIs(fn, "2873533916") then return "ActionQueue RB3" end
+            return nil
         end
 
         local LIMIT, TTL, BATCH = 121, 30, 8
@@ -1990,18 +1997,27 @@ do
         local spawn = GLOBAL.SpawnPrefab
         local report_once = {}
         local marker_failed = false
-        log("[QPS TERRAIN r2] experimental habilitado")
+        log("[QPS TERRAIN r3] experimental habilitado")
         local function Report(key, message)
             if not report_once[key] then
                 report_once[key] = true
-                log("[QPS TERRAIN r2] " .. message)
+                log("[QPS TERRAIN r3] " .. message)
             end
         end
         local function Compatible(c)
-            if not FromGP(c.BuildGridPoint) or not FromGP(c.RemoveBuildGrid)
-                or not FromGP(c.OnUpdate) or not FromGP(c.RefreshGridPoint)
-                or not FromGP(c.RefreshBuildGrid) then
-                Report("source", "fallback: metodos GP nao reconhecidos")
+            local class = GLOBAL.require("components/placer")
+            if not FromGP(class.OnUpdate) then
+                Report("class", "fallback: classe OnUpdate nao reconhecida")
+                return false
+            end
+            for _, name in ipairs({"BuildGridPoint", "RemoveBuildGrid", "RefreshGridPoint", "RefreshBuildGrid"}) do
+                if not FromGP(c[name]) then
+                    Report("source_" .. name, "fallback: " .. name .. " nao reconhecido")
+                    return false
+                end
+            end
+            if not UpdateOrigin(c.OnUpdate) then
+                Report("update", "fallback: wrapper OnUpdate desconhecido")
                 return false
             end
             local idx = index or rawget(GLOBAL, "KnownModIndex")
@@ -2100,13 +2116,13 @@ do
             end
             warm = w:DoTaskInTime(2, Prewarm)
         end)
-        AddPrefabPostInit("gridplacer", function(inst)
-            local self = inst.components and inst.components.placer
-            if not self or self._qps_terrain_pool then return end
+        local function Install(self)
+            if not self or not self.builder or self._qps_terrain_pool then return end
             local oldbuild, oldremove = self.BuildGridPoint, self.RemoveBuildGrid
             if not Compatible(self) then return end
             self._qps_terrain_pool = true
-            Report("hook", "GP 3.2.0: hook instalado")
+            Report("hook_" .. UpdateOrigin(self.OnUpdate),
+                "GP 3.2.0: hook instalado; OnUpdate=" .. UpdateOrigin(self.OnUpdate))
             local oldrefresh, oldupdate = self.RefreshBuildGrid, self.OnUpdate
             local built, reused, created, fallback, checked = 0, 0, 0, 0, 0
             local refresh_ms, last_report = 0, -100
@@ -2132,10 +2148,13 @@ do
                 local had = cmp.build_grid ~= nil
                 local start = clock()
                 local ret = oldupdate(cmp, dt)
+                if cmp.build_grid and not Eligible(cmp) then
+                    Report("ineligible", "grade ativa sem otimizacao: restricoes de compatibilidade")
+                end
                 local elapsed = (clock() - start) * 1000
                 if (not had and cmp.build_grid) or (elapsed >= 8 and clock() - last_report >= 1) then
                     last_report = clock()
-                    log(string.format("[QPS TERRAIN r2] update=%.2fms built=%d reused=%d light=%d fallback=%d checked=%d refresh=%.2fms pool=%d",
+                    log(string.format("[QPS TERRAIN r3] update=%.2fms built=%d reused=%d light=%d fallback=%d checked=%d refresh=%.2fms pool=%d",
                         elapsed, built, reused, created, fallback, checked, refresh_ms, #pool))
                     built, reused, created, fallback, checked, refresh_ms = 0, 0, 0, 0, 0, 0
                 end
@@ -2180,9 +2199,23 @@ do
                 local had = cmp.build_grid ~= nil
                 local ret = oldremove(cmp, ...)
                 if had and cmp.builder and cmp.snap_to_tile then
-                    log(string.format("[QPS TERRAIN r2] remove=%.2fms pool=%d checked=%d refresh=%.2fms",
+                    log(string.format("[QPS TERRAIN r3] remove=%.2fms pool=%d checked=%d refresh=%.2fms",
                         (clock() - start) * 1000, #pool, checked, refresh_ms))
                 end
+                return ret
+            end
+        end
+        AddPrefabPostInit("gridplacer", function(inst)
+            local self = inst.components and inst.components.placer
+            if not self or self._qps_terrain_builder then return end
+            local oldset = self.SetBuilder
+            if type(oldset) ~= "function" then return end
+            self._qps_terrain_builder = true
+            -- Called by PlayerController after prefab and component post-inits.
+            -- Passive GP markers never receive a builder.
+            self.SetBuilder = function(cmp, ...)
+                local ret = oldset(cmp, ...)
+                if cmp.builder then Install(cmp) end
                 return ret
             end
         end)

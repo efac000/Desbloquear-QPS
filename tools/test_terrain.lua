@@ -62,10 +62,18 @@ GLOBAL={debug=debug,os=os,print=function(s) logs[#logs+1]=s end,SpawnPrefab=spaw
     KnownModIndex={GetModInfo=function() return {version=version} end}}
 function GetModConfigData() return config end
 function AddPrefabPostInit(name,fn) hooks[name]=fn end
-local function init()
+local function wrap(fn,id)
+    return assert(factory("return function(old) return function(c,dt) c.wrapper_calls=(c.wrapper_calls or 0)+1; return old(c,dt) end end","@mods/workshop-"..id.."/modmain.lua"))()(fn)
+end
+local function init(wrapper, passive)
     local c=setmetatable({inst=entity("gridplacer"),builder={},snap_to_tile=true,placertype="gridplacer",
         geometry={gridplacer_rotation=0}},{__index=class})
-    c.inst.components.placer=c;hooks.gridplacer(c.inst);return c
+    c.builder=nil
+    c.SetBuilder=function(self,builder) self.builder=builder;return "builder-result" end
+    if wrapper then c.OnUpdate=wrapper(c.OnUpdate) end
+    c.inst.components.placer=c;hooks.gridplacer(c.inst)
+    if not passive then assert(c:SetBuilder({})=="builder-result") end
+    return c
 end
 local function grid(c,n)
     c.build_grid={{}};c.build_grid_positions={{}};c.refresh_queue={}
@@ -80,7 +88,16 @@ assert(not init()._qps_terrain_pool);class.BuildGridPoint=original
 hooks.world(GLOBAL.TheWorld)
 for i=1,13 do assert(tasks[i] and not tasks[i].cancelled);tasks[i].fn() end
 assert(light==25 and #tasks==13)
-local a=init();assert(a._qps_terrain_pool);grid(a,25)
+local passive=init(nil,true);assert(not passive._qps_terrain_pool)
+local unknown=init(function(fn) return function(c,dt) return fn(c,dt) end end)
+assert(not unknown._qps_terrain_pool)
+local a=init(function(fn) return wrap(wrap(fn,"2302837868"),"2873533916") end)
+assert(a._qps_terrain_pool);grid(a,25)
+a:OnUpdate(0);assert(a.wrapper_calls==2)
+assert(#a.refresh_queue>=21 and #a.refresh_queue<25)
+-- rebuild queue for existing budget assertions
+a.refresh_queue={};a.checked=0
+for i=1,25 do a.refresh_queue[i]={1,i};a.build_grid[1][i].hidden=true end
 assert(_G.spawned==0 and light==25)
 local first=a.build_grid[1][1];assert(first.prefab=="tile_outline" and first.hidden)
 a:RefreshBuildGrid(0);assert(#a.refresh_queue==25)
@@ -88,7 +105,7 @@ a:RefreshBuildGrid(nil);assert(#a.refresh_queue>=21 and #a.refresh_queue<25)
 while #a.refresh_queue>0 do a:RefreshBuildGrid(nil) end
 assert(a.checked==25 and not first.hidden)
 a:RemoveBuildGrid();assert(first.valid and first.hidden and removed==0)
-local b=init();grid(b,25);assert(_G.spawned==0 and light==25)
+local b=init(function(fn) return wrap(fn,"2302837868") end);assert(b._qps_terrain_pool);grid(b,25);assert(_G.spawned==0 and light==25)
 b:RemoveBuildGrid();assert(#tasks==14)
 tasks[14].fn();assert(removed==8)
 while removed<25 do tasks[#tasks].fn() end
